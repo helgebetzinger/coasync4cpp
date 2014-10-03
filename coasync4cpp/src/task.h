@@ -1,23 +1,9 @@
 #pragma  once
 
-// Copyright Evgeny Panasyuk 2013.
-// Distributed under the Boost Software License, Version 1.0.
-// (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
-
-
-// e-mail: E?????[dot]P???????[at]gmail.???
-
-// Full emulation of await feature from C# language in C++ based on Stackful Coroutines from
-// Boost.Coroutine library.
-// This proof-of-concept shows that exact syntax of await feature can be emulated with help of
-// Stackful Coroutines, demonstrating that it is superior mechanism.
-// Main aim of this proof-of-concept is to draw attention to Stackful Coroutines.
 
 #define BOOST_THREAD_PROVIDES_FUTURE_CONTINUATION
 #define BOOST_THREAD_PROVIDES_FUTURE
 #define BOOST_RESULT_OF_USE_DECLTYPE
-
 
 #include <boost/coroutine/all.hpp>
 #include <boost/thread.hpp>
@@ -35,8 +21,6 @@ static void verifyBoostConfiguration() {
 	// one can simply #define BOOST_THREAD_VERSION 4 at compiler settings or within stdafx.h : 
 	static_assert( BOOST_THREAD_VERSION == 4, "boost::thread has to be configured for version 4" ); 
 }
-// ___________________________________________________________ //
-
 
 // ___________________________________________________________ //
 
@@ -117,40 +101,31 @@ template< typename FutureType > struct Task : public FutureType
 	Task& operator = (const Task& arg) = delete;
 
 	// INQUIRY 
-
+	
 	Result get() {
 		try {
-			if (this->is_ready()) {
+			if ( is_ready()) {
 				// egal, wo wir sind:
 				return super::get();
 			}
 			else if (co_stack().empty()) {
-				// sind in Hauptfunktion, außerhalb ein coroutine:
-				// wenn wir die msg-loop hier blockieren würden, kann keine CoRoutine mehr ausgeführt und 
-				// auch kein Ergebniss mehr zurückgeliefert werden.
-				//			thread->runUntil(ft); -> einfach normal schlafen legen aber nach dem Aufwachen bzw. jedem Task wieder die Bedingung von future prüfen. 
-				//			Das reicht, da ja das Aufwachen immer von einer geschedulten op begleitet wird. 
-				//		    TODO: TLS für coro-stack nutzen ... 
-				assert(!"need impl!");
+				assert(!"called task::get outside of a coroutine context! Use a TaskFactory to fix this!");
+				// this blocks: 
 				return super::get();
 			}
 			else {
-				// sind in coroutine, 			
-				// bool coroutineNeedsResult = true; 
+				// here we are within coroutine 
 				auto current_coro = co_stack().top();
 
-				// Achtung: then ruft durchaus in einem fremden Thread zurück!!
+				// Attention: 'then' might callback us wihtin any thread context!
+
 				/*future*/ auto result = this->then([current_coro](FutureValue ready) -> Result
 				{
-					// sind im Kontext einer asynchronen Operation und halten ihr Ergebniss in den Händen. Der aktuelle
-					// thread muss nicht dem Originalthread entsprechen, es ist einfach der Thread der von der asynchronen Operation
-					// genutzt wurde. 
-					// Wir sind also weder in der coroutine noch in der Hauptfunktion. Da die coroutine 
-					// aber auf dieses Ergebniss wartet und deshalb bereits "then" einbezogen hat, müssen wir nun die coroutine im Originalthread 
-					// wieder aufwecken. 
+					// We are within the context of async operation and have its result here within 'ready'. Current thread
+					// need not to be the original thread , its simple the thread that was used by the async operation. 
 
-					// TODO: wir könnten sofort resume aufrufen, wenn die coRoutine multi-thread fähig ist. 
-					// Aber dann könnte man es auch gleich per async aufrufen ... 
+					// Because the main routine still activated "then" and thus now awaits the result urgently, we have now to 
+					// wake-up the coroutine within the original thread. 
 
 					post2thread(
 						current_coro.context,
@@ -163,7 +138,7 @@ template< typename FutureType > struct Task : public FutureType
 					return ready.get();
 				});
 
-				co_stack().yield(); // zurück zu Aufrufer der coroutine, weil das Ergebniss noch auf sich warten läßt ..
+				co_stack().yield(); // back to the caller, because the result is not yet available ... 
 				return result.get();
 			}
 		}
@@ -207,28 +182,23 @@ auto make_task(Foo&& foo, Args&&... args)->Task < boost::future< typename functi
 	auto coro_task = CoroTask( coro_promise.get_future());
 	co_stack().push(CurrentCoro({ currentThread() }));
 
-	// It is possible to avoid shared_ptr and use move-semantic,
-	// but it would require to refuse use of std::function (it requires CopyConstructable),
-	// and would lead to further complication and is unjustified
-	// for purposes of this proof-of-concept
-
 	std::function< Result() > fooObj(std::bind(std::forward<Foo>(foo), std::forward<Args>(args)...));
 
 	std::shared_ptr<coro_pull> coroutine =
 	{
-		// beim Erzeugen von coro_pull wird SOFORT f , bzw. hier hier unser Proxy aufgerufen:
-		// 1. in den Proxy springen
+		// while creation coro_pull it calls IMMEDIATELLY f , thus, it calls here our proxy:
+		// 1. jum into the proxy:
 		std::make_shared<coro_pull>(std::bind([fooObj](CoroPromise &promise, coro_push &caller)
 		{
-			caller(); // 2. yield / zunächst wieder raushüpfen .. um die fertig erzeugte coroutine im coro_stack abzulegen
-			co_stack().top().caller = &caller; // 5. Rücksprung merken ... kann sich jederzeit ändern ?! 
-			set_value( promise, fooObj); // 6. eigentliche coroutine ausführen. Wenn in f await aufgerufen wird, dann sichert sich await die CurrentCoro vom coro_stack. 
+			caller(); // 2. yield / first of all jump out again , to put the created coroutine onto the coro_stack 
+			co_stack().top().caller = &caller; // 5. save the returns adresd 
+			set_value( promise, fooObj); // 6. execute the real coroutine. If we call f with task/await, than Task saves the currentCoro from coro_stack. 
 		}, std::move(coro_promise), std::placeholders::_1))
 	};
 
 	co_stack().top().coro = std::move(coroutine); // 3. 
-	co_stack().resume(); // 4. coroutine wieder anstarten. Diese Sequenz wäre unötig, wenn coro_pull() nicht sofort die coroutine aktiviert! -- dazu ev. pull und oush verdrehen .. 
-	co_stack().pop(); // 7. zerstört coroutine , wenn diese nicht zuvor von einem await in der coroutine selbst abgholt worden wäre.. 
+	co_stack().resume(); // 4. re-start coroutine. We could prevent this sequence, if we swap pull und push! This would save a context switch. Todo ... 
+	co_stack().pop(); // 7. destroys coroutine , if it was not saved by a await within the coroutine itself ... 
 
 	return coro_task;
 }

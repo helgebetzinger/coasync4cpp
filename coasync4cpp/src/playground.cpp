@@ -1,22 +1,8 @@
 ﻿
 
-
 #include "TaskDispatcher.h"
 #include "bind2thread.h"
 #include "taskify.h"
-
-// Doku:
-// https://www.lucidchart.com/documents/edit/207e56ce-f845-4d75-83ea-1e01164b3bab/0
-// https://docs.google.com/document/d/1Ak2ZIMMJ6GRTIVOkbAHv2qeCym7z2GIcrmO93qsXPec/edit#heading=h.jm925xidawmo
-
-// coroutine
-// Future async( method ) // in weiterem Thread ausführen , Rückgabewert in Future
-// Future thunkify( method(callback) ) // in weiterem Thread ausfüheren , Resultate des Callbacks in Future
-// Future method() // normale Funktion, die ihrerseits Futures erzeugen kann 
-
-// siehe http://stackoverflow.com/questions/11004273/what-is-stdpromise
-// std::promise nachbilden und dort einfach _Associated_state überladen,
-// die Warte-Funktion umbiegen. Geht dann zunächst nur mit der vs2013 stl ... !! das halt abbprüfen oder als Include mitausliefern!
 
 
 ////// Taskify ///////
@@ -37,56 +23,6 @@ int helper(int i, MyFunctionObject ) {
 	return i;
 }
 
-// TODO: kann hier std statt boost genutzt werden? 
-/// SelectArgOfType 
-
-// Sucht die Position von U in Pattern und gibt das Argument dieser Position auf Ts zurück. 
-// So kann also mit Hilfe eines Patterns Typen aus Ts selektiert werden.
-
-//template< typename U, typename Foo, typename... Pattern > struct SelectTypeOf {
-//};
-
-#ifdef FERTIG_ASYNC 
-
-// coasync mit eigenen futures für boost nachprogrammieren: 
-// http://www.daniweb.com/software-development/cpp/threads/414576/could-i-find-something-similar-to-stdasync-from-boost 
-
-// cofunc 
-
-// msgloop 
-
-
-// mit get, Ausführung wird unterbrochen bis zur nächsthöchsten CoRoutine Instanz: 
-size_t file_sizes(string f1, string f2) {
-	cofuture<FILE> f1 = boost::async(open, f1);
-	cofuture<FILE> f2 = boost::async(open, f2);
-	return f1.get().size() + f2.get().size()
-}
-
-// Idee: mit get, Ausführung wird unterbrochen bis zur nächsthöchsten CoRoutine Instanz: 
-
-size_t 
-file_sizes(string f1, string f2) {
-	cofuture<FILE> f1 = boost::async(open, f1);
-	cofuture<FILE> f2 = boost::async(open, f2);
-	return f1.get().size() + f2.get().size(); 
-}
-
-extern void openAsync( string, void(*onOpened)(FILE));
-
-size_t
-file_sizes(string f1, string f2) {
-	cofuture<FILE> f1 = thunkify(openAsync, f1, placeholders::_CALLBACK);
-	cofuture<FILE> f2 = thunkify(openAsync, f1, placeholders::_CALLBACK);
-	return f1.get().size() + f2.get().size();
-}
-
-// wenn man nun aber die Funktion per coasync aufruft, bekommt man sofort ein Ergebniss:
-cofuture<size_t> size = std::coasync(file_sizes, f1, f2);
-
-// und kann das dann weiter verwenden ... Der Aufrufer bestimmt so über die Asynchronität, nicht der Implementierer.
-
-#endif
 
 
 // Adapter für sleepEx %&& PostAlways an die Qt-Threads ... 
@@ -148,73 +84,57 @@ void testCompileTaskify() {
 
 }
 
-void test(int i) {
+static void testInstallThreadAdapter() {
 
+	// see  http://qt-project.org/doc/qt-5/qthread.html#currentThread
+	// aktuellen QThread + QAbstractEventDispatcher kann so herausgefunden werden ... 
+	// Execution Impl für Thread
 
-	/*
-		1) aus function-Objekt Signatur ermitteln können / done // siehe auch http://kjellkod.wordpress.com/2014/04/30/c11-template-tricks-finding-the-return-value-type-for-member-function/ 
-		2) per Typ statt Parameter Signatur zerlegen -> siehe http://stackoverflow.com/questions/14441410/function-signature-as-template-parameter 
-		3) Thinkify vervollständigen
-		4) Lösungsweg dokumentieren + beibehalten
-		5) verbesserungen -> siehe http://cpptruths.blogspot.de/2012/06/perfect-forwarding-of-parameter-groups.html , https://www.preney.ca/paul/archives/486 
-	*/
+	// post, wenn neue Position hinter der "demnächst" ausgeführten liegt 
+	// keine posts ausführen, die soeben erst geschedult wurden 
 
-	// SelectType 
-
-	std::promise<int> p;
-	// siehe http://www.boost.org/doc/libs/1_55_0/doc/html/thread/synchronization.html#thread.synchronization.futures.then 
-//	future().next( /* hier auf "available" setzen PLUS Scheduler antreiben , wenn es an diesem Future gerade blockiert. */ ).
-//  dann einfach wieder weiteres next anbieten
-//  Also: nur einen einfachen Proxy , der in next, wenn es sich in einem co-routinen Konext UND die Ergebnisse bereits angefragt wurden, einfügt
-//  und das warten in einem Co-Routine Kontext abfängt und dann den Co-Routine Kontext automatisch verlässt. 
-
-
-	//auto url = thunkify_base( &helper, 5, _CALLBACK, "tst" );
-	//if ( url == "http:://www.spiegel.de") {
-	//}
-	//if (url.get(0) == "http:://www.spiegel.de") {
-	//}
-	//if (url.get(1) == "http:://www.spiegel.de") {
-	//}
-
-//	TypeOfArg < placeholders::_CALLBACK, MyStaticMethod, int, placeholders::_CALLBACK, char * >::type testType;
-
+	// nur noch Mechanismus hinzufügen, um posted Methoden auszuführen ... 
+	// für Qt: http://qt-project.org/doc/qt-4.8/qcoreapplication.html#sendEvent 
+	// http://stackoverflow.com/questions/10887157/whats-the-qmetacallevent-for-and-how-to-access-its-details
+	// eigene Loop
+	// Aktivierung an Qt Thread posten, wenn noch nicht erfolgt 
+	//
 }
 
-///// TESTS /////
 
-///// CODING EXAMPLE /////
+// Diskussion coasync vs. coasyncex 
+// TODO: coasync mit Argumenten, spart ein externes bind, legt nur Stack an, wenn noch keiner existiert. 
+// TODO: coasyncex mit Argumenten, legt immer einen neuen Stack an
 
-//// can it look like this: 
-//void login() {
-//	username = GetUserName();
-//	password = GetUserName();
-//	createAccount( username, password);
-//}
-//
-//// it can look like this: 
-//void login() {
-//	auto username = getUserName();
-//	auto password = getPassword();
-//	createAccount( username, password );
-//}
-//
-//auto t = task(login); 
-//// mit t.get() -> explizit warten. Ansonsten läuft die Methode so parallel ... 
-//
-////Konzept:
-////aus f(arg) in async umwandeln per
-//
-//task<f> = task( f, arg ); 
-//
-//// in f darf nun await genutzt werden! 
-//
-//// Funktionen anbieten, die Task<F> zurückgeben:
-//
-//
-//
-//
-//
+// TODO: Doks erweitern ... 
 
+// Vor/Nachteile stackful/stackless coroutines (C#)
+// Vor/Nachteile async/await ggü. komplettes verstecken dieser Funktionalität in Phyton (Phyton)
+// Beenden einer CoRoutine: blockiert beim Aufrufer dann doch oder aber gibt nichts zurück. 
+// -> in UI völlig ok, es werden Events ausgeführt, die irgendwann im Model bzw. der UI etwas ändern. Keiner wartet darauf.
+// siehe https://channel9.msdn.com/Events/Build/2013/2-306 ; letzte Kommentare von https://channel9.msdn.com/Niners/EvgenyLPanasyuk
 
+// Diskussion in http://www.progtown.com/topic1322785-trick-await-in-a-c-based-on-stackful-coroutines-from-boost-coroutine.html 
+
+// TODO: wählen: 
+// 1) thread::post posted alles immer als eine coasync Funktion
+// 2) coasync liefert einen packaged_task bzw. future, der geposteed oder auf den gewartet werden kann.  -> wäre die einfachste Syntaxform ?? Sonst extra Befehl nötig.
+// packaged_coasync + coasync + bind2coasync ?? 
+// create_task( future ) oder bind2task ? 
+// create_task( foo )
+
+// 2) task (boost::future )
+// get() 
+
+// siehe auch http://www.boost.org/doc/libs/1_55_0/doc/html/thread/build.html#thread.build.configuration.future 
+// 3) es gibt eine postAsAsync2current coasync liefert einen packaged_task, der geposted oder auf den gewartet werden kann. 
+
+// Async Performance: Understanding the Costs of Async and Await : http://msdn.microsoft.com/en-us/magazine/hh456402.aspx 
+
+// allgemein -> Diskussionen in C# um async/await suchen und auf C++ münzen ... 
+
+// TODO: thread etc. alles auf boost umstellen 
+// TODO: bind2current für alle Signaturen ...
+
+// copy/move semantic in Task checken ... 
 

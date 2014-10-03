@@ -53,11 +53,11 @@ template<class T> using is_placeholder_type = std::is_base_of < placeholders::_P
 
 /// FindPosOfType
 
-// Liefert die Position des gesuchten Typs TypeToFind, im Fehlerfall aber einen Wert < 0 .
+// Return position of the tpye we search for, but in case of an error a value < 0 .
 
-// Endpunkt
+// end point
 template< typename... Ts > struct find_first_pos_of_type {
-	// wenn die Sequenz unten stoppt, landen wir zuletzt hier:
+	// if the sequence below stops, then we go here:
 	static const std::size_t value = -100;
 };
 
@@ -66,17 +66,17 @@ template< typename TypeToFind, typename T, typename... Rest > struct find_first_
 	static const std::size_t value = 1 + std::conditional< std::is_same< TypeToFind, T >::value,
 		std::integral_constant<int, 0>,
 		find_first_pos_of_type< TypeToFind, Rest... > > ::type::value;
-	// Achtung: position starts at null, value at one!
+	// Attention: position starts at null, value at one!
 	static const std::size_t position = value - 1;
 };
 
 /// type_at_pos
 
-// Liefert den Typ an Position Pos, im Fehlerfall aber den Typ placeholders::_UNDEFINED.
+// return type at position Pos, in case of error the type placeholders::_UNDEFINED.
 
-// Endpunkt
+// end point
 template< int Pos, typename... Ts > struct type_at_pos {
-	// wenn die Sequenz unten stoppt, landne wir zuletzt hier:
+	// if the sequence below stops, then we go here:
 	typedef placeholders::_UNDEFINED type;
 };
 

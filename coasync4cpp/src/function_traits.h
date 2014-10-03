@@ -1,6 +1,6 @@
 #pragma once 
 
-/* Delivers function traits. 
+/* function traits. 
 */
 
 ////////////// FunctionSignature /////////////////

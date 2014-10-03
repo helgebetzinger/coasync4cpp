@@ -129,10 +129,10 @@ template< typename Signature, typename FirstT, typename ... Ts >
 auto bind2thread(const TaskDispatcherWeakPtr& thread, Signature foo, FirstT&& arg0, Ts&&... args)
 -> decltype(std::bind(&Bind2Proxy<Signature>::post2thread_w_args< remove_const_reference<FirstT>::type >, thread, foo, std::forward<FirstT>(arg0), std::forward<Ts>(args)...))
 {
-	// weitere optimierungen via: http://stackoverflow.com/questions/687490/how-do-i-expand-a-tuple-into-variadic-template-functions-arguments ??
+	// more optimazations possible using : http://stackoverflow.com/questions/687490/how-do-i-expand-a-tuple-into-variadic-template-functions-arguments ??
 	// bzw.: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3579.html ?
 	
-	// improve Performance: http://blog.coldflake.com/posts/2014-01-12-C%2B%2B-delegates-on-steroids.html 
+	// improve Performance further: http://blog.coldflake.com/posts/2014-01-12-C%2B%2B-delegates-on-steroids.html 
 
 	static_assert(function_traits<Signature>::arity_w_obj == sizeof...(Ts) + 1 , "number of arguments does not fit method signature!");
 	return std::bind( &Bind2Proxy<Signature>::post2thread_w_args< remove_const_reference<FirstT>::type >, thread, foo, std::forward<FirstT>(arg0), std::forward<Ts>(args)...);
@@ -161,33 +161,5 @@ auto bindAsTask( Signature foo, Ts&&... args)
 	static_assert(function_traits<Signature>::arity_w_obj == sizeof...(Ts), "number of arguments does not fit method signature!");
 	return std::bind(&Bind2Proxy<Signature>::task, foo, std::forward<Ts>(args)...);
 }
-
-
-// template< typename Signature, typename ... Ts >
-//auto send2thread(const TaskDispatcherWeakPtr& thread, Signature foo, Ts&&... args)
-//-> decltype(std::bind(&Bind2Proxy<Signature>::send2thread, thread, foo, std::forward<Ts>(args)...))
-//{
-//	static_assert(function_traits<Signature>::arity_w_obj == sizeof...(Ts), "number of arguments does not fit method signature!");
-//	return std::bind(&Bind2Proxy<Signature>::send2thread, thread, foo, std::forward<Ts>(args)...);
-//}
-
-//
-//template< typename Signature, typename ... Ts >
-//auto send2thread(const TaskDispatcherWeakPtr& thread, Signature foo, Ts&&... args)
-//-> decltype (std::bind(&Bind2Current<Signature>::send, std::shared_ptr< Bind2Current<Signature> >(), std::forward<Ts>(args)...))
-//{
-//	return std::bind(&Bind2Current<Signature>::send,
-//		std::shared_ptr< Bind2Current<Signature> >(new Bind2Current<Signature>(thread, foo)),
-//		std::forward<Ts>(args)...);
-//}
-//
-//template< typename ... Ts >
-//auto send2current(Ts&&... args)
-//-> decltype (send2thread(currentThread(), std::forward<Ts>(args)...))
-//{
-//	return send2thread(currentThread(), std::forward<Ts>(args)...);
-//}
-//
-//
 
 

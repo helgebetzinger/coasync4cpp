@@ -14,11 +14,10 @@
 	 Zu Qt Threads: 
 	 http://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/ 
 
-	 Anmerkung: Eine Implementierung von ThreadWithTasks für QtThread wäre ebenfalls leicht möglich, 
-	 wird aktuell aber nicht benötigt. 
+	 A implementation of ThreadWithTasks for QtThread would be easy possible , but is not neccessary right now.
 
-	 Diesen Header im Zielprojekt dem Qt Metacompiler bekannt machen. Alternativ könnte man auch sigwd für das connect
-	 nutzen, dann hätten wir aber eine Abhängigkeit mehr im Projekt. 
+	 Attention. this header must be make know to the Qt Metacompiler of the using project. This, because we use her signal/slot syntax. 
+	 As an alternative , one could use the sigwd for the connect, but than we would have a extra dependency within the project.
 
 */
 class TaskDispatcher4QtThread : public QObject , public TaskDispatcherBase {
@@ -28,7 +27,7 @@ class TaskDispatcher4QtThread : public QObject , public TaskDispatcherBase {
 
 public:
 
-	// Erzeugt einen Taskdispatcher im aktuellen Qt-QCoreApplication-Thread. Geeignet um i aktuellen thread Tasks zu verarbeiten.
+	// creates an Taskdispatcher within the current Qt-QCoreApplication-Thread. Suitable to process tasks within the qt main thread.
 	static std::shared_ptr<TaskDispatcher4QtThread> create() {
 		std::shared_ptr<TaskDispatcher> dispatcher(new TaskDispatcher4QtThread());
 		::initCurrentThread(dispatcher);
@@ -37,10 +36,11 @@ public:
 
 private:
 
-	// onActivation und onAbort besser sezifizieren:
-	// onActivation - Abarbeitung von executeQueue veranlassen. TaskDispatcherBase schützt aber bereits vor unnötigen Aktivierungen, daß ist hier nicht
-	// mehr nötig. 
-	// onAbort - Execution-Loop verlassen und TLS-Instanz austragen ; Parent kümmert sich TaskDispatcherBase aber um Schutz vor neuen Posts.. 
+	// understand the events: 
+
+	// onActivation - Triggers processing of the executeQueue. TaskDispatcherBase protects us against unnecessary activatios. 
+	// Thus, we do not need implement such thing here. 
+	// onAbort - leave Execution-Loop and remove us from the TLS-instance ; TaskDispatcherBase protects us now againts new posts ... 
 
 	TaskDispatcher4QtThread() : super(std::bind(&TaskDispatcher4QtThread::onActivation, this),
 									  std::bind(&TaskDispatcher4QtThread::onAbort, this)) {

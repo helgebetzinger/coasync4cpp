@@ -5,7 +5,7 @@
 #include "TaskDispatcher.h"
 #include "bind2thread.h"
 
-#include "task.h"
+#include "await.h"
 
 class test_task : public ::testing::Test {
 protected:
@@ -55,10 +55,10 @@ size_t
 file_sizes( int s1, int s2 ) { 
 
 	boost::future<FILEINFO> i1 = boost::async([s1] { return FILEINFO(s1); } );
-	boost::future<FILEINFO> i2 = boost::async([s2] { return FILEINFO(s2); } );
+	Task< boost::future<FILEINFO> > i2 = Task<  boost::future<FILEINFO> > (boost::async([s2] { return FILEINFO(s2); }));
 
 	size_t r0 = (await i1).size();
-	size_t r1 = (await i2).size();
+	size_t r1 = i2.get().size();
 	return r0 + r1; 
 }
 
@@ -227,49 +227,9 @@ TEST_F(test_task, await_with_task ) {
 	
 	std::shared_ptr<TaskDispatcher4StdThread> dispatcher(TaskDispatcher4StdThread::create());
 	
-	// Diskussion coasync vs. coasyncex 
-	// TODO: coasync mit Argumenten, spart ein externes bind, legt nur Stack an, wenn noch keiner existiert. 
-	// TODO: coasyncex mit Argumenten, legt immer einen neuen Stack an
-
-	// TODO: Doks erweitern ... 
-
-	// Vor/Nachteile stackful/stackless coroutines (C#)
-	// Vor/Nachteile async/await ggü. komplettes verstecken dieser Funktionalität in Phyton (Phyton)
-	// Beenden einer CoRoutine: blockiert beim Aufrufer dann doch oder aber gibt nichts zurück. 
-	// -> in UI völlig ok, es werden Events ausgeführt, die irgendwann im Model bzw. der UI etwas ändern. Keiner wartet darauf.
-	// siehe https://channel9.msdn.com/Events/Build/2013/2-306 ; letzte Kommentare von https://channel9.msdn.com/Niners/EvgenyLPanasyuk
-
-	// Diskussion in http://www.progtown.com/topic1322785-trick-await-in-a-c-based-on-stackful-coroutines-from-boost-coroutine.html 
-
-	// TODO: wählen: 
-	// 1) thread::post posted alles immer als eine coasync Funktion
-	// 2) coasync liefert einen packaged_task bzw. future, der geposteed oder auf den gewartet werden kann.  -> wäre die einfachste Syntaxform ?? Sonst extra Befehl nötig.
-	// packaged_coasync + coasync + bind2coasync ?? 
-	// create_task( future ) oder bind2task ? 
-	// create_task( foo )
-
-	// 2) task (boost::future )
-	// get() 
-
-	// siehe auch http://www.boost.org/doc/libs/1_55_0/doc/html/thread/build.html#thread.build.configuration.future 
-	// 3) es gibt eine postAsAsync2current coasync liefert einen packaged_task, der geposted oder auf den gewartet werden kann. 
-	
-	// Async Performance: Understanding the Costs of Async and Await : http://msdn.microsoft.com/en-us/magazine/hh456402.aspx 
-
-	// allgemein -> Diskussionen in C# um async/await suchen und auf C++ münzen ... 
-
-	// TODO: thread etc. alles auf boost umstellen 
-	// TODO: bind2current für alle Signaturen ...
-
-	// copy/move semantic in Task checken ... 
-
-
-	
-	// TODO: test 
 	dispatcher->postex( bindAsTask(file_sizes, 1, 2));
 
 	post2current([dispatcher] {
-		// immer explizit einführen oder im Scheduler bereits unterstützen?
 		make_task( [dispatcher]
 		{	
 			/*future*/ auto fsizes = make_task( file_sizes, 1, 2 );
@@ -280,67 +240,8 @@ TEST_F(test_task, await_with_task ) {
 		);
 	});
 
-	// im Moment können wir den dispatcher NICHT nested betreiben! So ein Vorhaben mit assert abfangen?
+	// at the moment, the dispatcher cannot be used nested! Should we catch such plan with an assert?
 	dispatcher->run();
 
 }
 
-// bind2task( callback )
-// make_task
-
-//// Variante1: in Klasse kapseln, coasync erzwingen: 
-//
-//R foo(a, b);
-//
-//Task<R> foo_task(a, b) {
-//	return coasync( foo, this, a, b); 
-//}
-//
-//// Variante2a: Aufrufer erzwingt coasync: 
-//std::function < Task<R>(a, b) > bind2task( r (a, b ) );
-//
-//// Variante2b: Aufrufer erzwingt coasync: 
-//Task<R>(a, b) coasync( foo, this, a, b); 
-
-//TEST_F(test_coroutine, make_task ) {
-//
-//	std::shared_ptr<TaskDispatcher4StdThread> dispatcher(TaskDispatcher4StdThread::create());
-//
-//	post2current([dispatcher] {
-//		coasync([dispatcher]
-//		{
-//			//auto task  = create_task( boost::async([] { return file_sizes(1, 2); } );
-//			//size_t sizes = task; // yield ... 
-//			//EXPECT_EQ(sizes, 3);
-//			//dispatcher->stop();
-//		}
-//		);
-//	});
-//
-//	dispatcher->run();
-//
-//
-//}
-
-// test copy/move of our task .. 
-// TODO: conversion operator generisch machen ..
-// Task< boost::future<size_t> > t(coasync(file_sizes, 1, 2));
-// TODO: bind_task / create_task vom Future oder von einer Funktion ... 
-
-//TEST_F(test_coroutine, send) {
-//
-//	// bindCoasync(&file_sizes, 1, 2);
-//
-//
-////	postCalls2Increment(100);
-//	awaitTasksDone();
-//	//EXPECT_EQ( mInvokeCount, 100);
-//}
-
-//TEST_F(test_coroutine, postAfterFinished ) {
-//	postCalls2Increment(100);
-//	tearDown();
-//	postCalls2Increment(100);
-//	EXPECT_EQ(mInvokeCount, 100);
-//}
-//

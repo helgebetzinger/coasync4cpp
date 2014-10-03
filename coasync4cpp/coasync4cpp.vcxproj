@@ -73,7 +73,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\bind2thread.cpp" />
-    <ClCompile Include="src\coroutine.cpp" />
     <ClCompile Include="src\playground.cpp" />
     <ClCompile Include="src\task.cpp" />
     <ClCompile Include="src\TaskDispatcher.cpp" />

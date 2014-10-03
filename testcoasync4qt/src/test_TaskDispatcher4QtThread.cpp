@@ -66,27 +66,5 @@ TEST_F(test_TaskDispatcher4QtThread, post2QtCoreThread ) {
 
 }
 
-TEST_F(test_TaskDispatcher4QtThread, post2QtThread) {
-
-	//std::shared_ptr<TaskDispatcher4QtThread> mainThread(TaskDispatcher4QtThread::create());
-	//std::thread::id executingThread;
-	//std::thread::id * executingThreadPtr(&executingThread);
-
-	//post2thread(secondThread(), [=] {
-
-	//	post2thread(mainThread, [=] {
-	//		*executingThreadPtr = std::this_thread::get_id();
-	//	});
-
-	//	quitQtMsgLoop();
-
-	//});
-
-	//execQtMsgLoop();
-
-	//EXPECT_EQ(std::this_thread::get_id(), executingThread);
-	//EXPECT_NE(thread->get_id(), executingThread);
-
-}
 
 

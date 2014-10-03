@@ -77,8 +77,8 @@ TaskDispatcherBase::post(PostMethod&& m)  {
 			result = cInvalidQueuePos;
 		}
 	}
-	// TODO: wenn activateProcessing noch Pending ist, dann keine weitere Aktivierung starten ... 
-	//if (result != cInvalidQueuePos && !hadScheduledTasks ) {
+	// TODO: if activateProcessing is still pending, than dont start a additional activiation ... 
+	//if (result != cInvalidQueuePos && !hadScheduledTasks ) { // but here is something buggy , if we uncomment it...
 	// assert(!"impl. me!");
 	if (result != cInvalidQueuePos) {
 		activateProcessing();
@@ -145,7 +145,7 @@ TaskDispatcher4StdThread::~TaskDispatcher4StdThread() {
 }
 
 void TaskDispatcher4StdThread::createAndRun( ThreadPtrPromise* promise) {
-	// Verstecken des Promise Args geht mit einem packaged_task, siehe http://www.boost.org/doc/libs/1_55_0/doc/html/thread/synchronization.html#thread.synchronization.futures
+	// hide ot the promise would work with an packaged_task, see http://www.boost.org/doc/libs/1_55_0/doc/html/thread/synchronization.html#thread.synchronization.futures
 	std::shared_ptr<TaskDispatcher4StdThread> dispatcher(create());
 	promise->set_value(dispatcher);
 	dispatcher->run();

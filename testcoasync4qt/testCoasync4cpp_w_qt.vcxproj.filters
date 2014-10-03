@@ -4,9 +4,6 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\test_qt_thread.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\test_TaskDispatcher4QtThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

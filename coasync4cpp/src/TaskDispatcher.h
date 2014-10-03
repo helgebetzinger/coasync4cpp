@@ -21,8 +21,8 @@ static const QueuePos cInvalidQueuePos = -1;
 typedef std::promise<void> VoidPromise;
 typedef std::future<void> VoidFuture;
 
-/** Führt Tasks im zugeordneten Thread aus, solange es am Leben ist. 
-	Die Tasks können von jedem Thread aus hinzugefügt werden. 
+/** Executes tasks within the assigned thread, as long as it alive.
+	Task can be added from any thread. 
   */
 struct TaskDispatcher : boost::noncopyable {
 
@@ -63,10 +63,10 @@ extern void initCurrentThread( const TaskDispatcherPtr& );
 extern void resetCurrentThread();
 
 
-/** Implementiert TaskDispatcher. 
-	+ Verarbeitet Methoden, bis stop aufgerufen wird. 
-	+ Wenn stop aufgerufen wird, werden alle bis dahin geschuldeten Methoden noch verarbeitet aber keine
-	  neue mehr angenommen. Es wird dann cInvalidQueuePos zurückgegeben.
+/** Implements TaskDispatcher. 
+	+ Processes tasks, until stop was called.
+	+ If stop is called, it processes all right now scheduled task but it does not accept new tasks. If you try this,
+	  you get cInvalidQueuePos as result.
   */
 struct TaskDispatcherBase : public TaskDispatcher, public Lockable // non_copyable 
 { 
@@ -115,11 +115,11 @@ public:
 	
 	virtual ~TaskDispatcher4StdThread();
 
-	// Erzeugt und startet einen Taskdispatcher. Geeignet für Starts in andere Threads.
+	// Creates and starts an Taskdispatcher. Suitable for starts into other threads.
 	static void createAndRun(ThreadPtrPromise* promise);
-	// Erzeugt einen Taskdispatcher im aktuellen Thread. Geeignet um i aktuellen thread Tasks zu verarbeiten.
+	// Creates and starts an Taskdispatcher within current thread. Suitable for processing tasks within current thread.
 	static std::shared_ptr<TaskDispatcher4StdThread> create();
-	// lässt TaskDispatcher ewig laufen ... 
+	// runs the dispatcher, until stop() was called. 
 	void run();
 
 private:
@@ -128,7 +128,6 @@ private:
 								 std::bind(&TaskDispatcher4StdThread::onAbort, this)), 
 								 mLeaveDispatcher(false) {
 	}
-
 
 	// single-threaded
 	void runForever();

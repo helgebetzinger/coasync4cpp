@@ -6,8 +6,8 @@
 
 
 /**
-	Einführung in tests: http://www.ibm.com/developerworks/aix/library/au-googletestingframework.html
-	Doku: https://code.google.com/p/googletest/w/list 
+	Introduction into tests: http://www.ibm.com/developerworks/aix/library/au-googletestingframework.html
+	doc: https://code.google.com/p/googletest/w/list 
 	https://code.google.com/p/googletest/wiki/V1_7_Primer 
 	https://code.google.com/p/googletest/wiki/V1_7_AdvancedGuide
 

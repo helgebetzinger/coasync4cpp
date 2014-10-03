@@ -112,8 +112,6 @@ using namespace std::placeholders;  // for _1, _2, _3...
 
 static void testBind2thread() {
 
-	// TODO: perfect forewarding für Argumente und Initialisierung: 
-
 	SimpleStruct s;
 	MyArglessFunctionObject o;
 
@@ -149,22 +147,5 @@ static void testBind2thread() {
 	std::function< QueuePos(int) > r17 = bind2thread(currentThread(), &DerivedSimpleStruct::virtualCombine, &d, 10, std::placeholders::_1);
 
 
-}
-
-static void testInstallThreadAdapter() {
-
-	// siehe http://qt-project.org/doc/qt-5/qthread.html#currentThread
-	// aktuellen QThread + QAbstractEventDispatcher kann so herausgefunden werden ... 
-	// Execution Impl für Thread
-	
-	// post, wenn neue Position hinter der "demnächst" ausgeführten liegt 
-	// keine posts ausführen, die soeben erst geschedult wurden 
-
-	// nur noch Mechanismus hinzufügen, um posted Methoden auszuführen ... 
-	// für Qt: http://qt-project.org/doc/qt-4.8/qcoreapplication.html#sendEvent 
-	// http://stackoverflow.com/questions/10887157/whats-the-qmetacallevent-for-and-how-to-access-its-details
-	// eigene Loop
-	// Aktivierung an Qt Thread posten, wenn noch nicht erfolgt 
-	//
 }
 

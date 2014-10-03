@@ -15,7 +15,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\test_qt_thread.cpp" />
     <ClCompile Include="src\test_TaskDispatcher4QtThread.cpp" />
   </ItemGroup>
   <ItemGroup>
