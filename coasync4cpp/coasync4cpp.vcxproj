@@ -80,6 +80,7 @@
     <ClCompile Include="src\tst_at_compile_time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\await.h" />
     <ClInclude Include="src\bind2thread.h" />
     <ClInclude Include="src\function_traits.h" />
     <ClInclude Include="src\task.h" />

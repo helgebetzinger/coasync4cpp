@@ -174,10 +174,6 @@ template< typename FutureType > struct Task : public FutureType
 		return super::get();	
 	}
 
-	FutureType get_future() {
-		// kann nur einmal geholt werden:
-		return *this;
-	}
 	operator Result ()	{
 		 return get();
 	}
@@ -231,27 +227,9 @@ auto make_task(Foo&& foo, Args&&... args)->Task < boost::future< typename functi
 	};
 
 	co_stack().top().coro = std::move(coroutine); // 3. 
-	co_stack().resume(); // 4. coroutine wieder anstarten. Diese Sequenz wäre unötig, wenn coro_pull() nicht sofort die coroutine aktiviert!
+	co_stack().resume(); // 4. coroutine wieder anstarten. Diese Sequenz wäre unötig, wenn coro_pull() nicht sofort die coroutine aktiviert! -- dazu ev. pull und oush verdrehen .. 
 	co_stack().pop(); // 7. zerstört coroutine , wenn diese nicht zuvor von einem await in der coroutine selbst abgholt worden wäre.. 
 
 	return coro_task;
 }
-
-
-struct Awaiter
-{
-	template<typename Task >
-	auto operator*(Task && task) -> typename std::enable_if< is_task_type < typename remove_const_reference< typename Task>::type >::value, decltype(task.get()) >::type
-	{
-		return task.get();
-	}
-	template<typename Future >
-	auto operator*(Future &&ft) -> typename std::enable_if< !is_task_type< typename remove_const_reference< typename Future>::type >::value, decltype(ft.get()) >::type
-	{
-		Task< typename remove_const_reference< typename Future>::type > task(std::move(ft));
-		return task.get();
-	}
-};
-
-#define await Awaiter()*
 
