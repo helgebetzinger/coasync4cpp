@@ -1,7 +1,5 @@
 # coasync4cpp Project  
 
-***
-
 coasync4cpp allows to write async code without callbacks using async/await/task! For C++11! 
 
 ## GitHub
