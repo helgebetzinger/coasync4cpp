@@ -59,6 +59,7 @@ TEST_F(test_QtAwaitables, QFutureWithQtConcurrent ) {
 		// example from http://blog.qt.digia.com/blog/2007/03/08/making-asynchronous-function-calls-with-qfuture/ 
 
 		QString s = await QtConcurrent::run(std::bind(latin1, "Hello World"));
+		EXPECT_EQ( s, "Hello World" );
 
 		quitQtMsgLoop();
 

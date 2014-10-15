@@ -61,7 +61,8 @@ template< typename FutureValue > struct Task < QFuture< FutureValue > > : public
 					});
 
 				}));
-			
+				
+				watcher.setFuture(*this);
 				co_stack().yield(); // back to the caller, because the result is not yet available ... 
 				return this->result();
 			}
