@@ -2,6 +2,34 @@
 
 coasync4cpp allows to write async code without callbacks using async/await/task! For C++11! 
 
+## async/await 
+
+This libarary let you use the async/await pattern, known from c#, for your c++ or qt projects. You can define any method as 'async' and than make use of the await or Task<> keywords of the library.  
+
+Lets see in an simple example, what the library can do for you. In this QT-based example, we make use of QFuture and QFutureWatcher to await the result of an operation within the thread pool: 
+
+
+     // Instantiate the objects and connect to the finished signal.
+     MyClass myObject;
+     QFutureWatcher<int> watcher;
+     connect(&watcher, SIGNAL(finished()), &myObject, SLOT(handleFinished()));
+     
+     // Start the computation.
+     QFuture<int> future = QtConcurrent::run(...);
+     watcher.setFuture(future);
+
+this can now be replaced by a single line of code: 
+ 
+     int result = await QtConcurrent::run(...);
+
+You save an complete callback, you have not longer to manage the QFuture/QFutureWatcher things. You simply write your code from top to bottom. As it is with synchronous code.
+
+`QtConcurrent::run` returns here an `QFuture`. This is called an Awaitable. coasync4cpp currently supports a bunch of Awaitables: 
+* boost::future
+* QFuture
+* Task<>
+
+
 ## GitHub
 
 [coasync4cpp issues](https://github.com/helgebetzinger/coasync4cpp/issues?q=is%3Aopen+sort%3Acreated-desc)
