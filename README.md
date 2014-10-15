@@ -30,6 +30,12 @@ You save an complete callback, you have not longer to manage the QFuture/QFuture
 * Task<>
 
 
+### Awaitables 
+### TaskFactories
+### Thread Dispatcher
+### How to start 
+
+
 ## GitHub
 
 [coasync4cpp issues](https://github.com/helgebetzinger/coasync4cpp/issues?q=is%3Aopen+sort%3Acreated-desc)
