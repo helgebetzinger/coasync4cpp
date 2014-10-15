@@ -35,7 +35,7 @@ coasync4cpp currently supports a bunch of Awaitables:
 * QFuture
 * Task<>
 
-We can await an Awaitbale using the `Task<>` object or `await` keyword. But, these awaits are only allowed within an asyncronous execution context. This create such an context, we use Task Factories. 
+We can await an Awaitbale using the `Task<>` object or `await` keyword. But, these awaits are only allowed within an asyncronous execution context. To create such an context, we use Task Factories. 
 
 ### TaskFactories
 ### Thread Dispatcher
