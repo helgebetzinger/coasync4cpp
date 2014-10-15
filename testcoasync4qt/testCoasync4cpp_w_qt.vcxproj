@@ -15,6 +15,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\test_QtAwaitables.cpp" />
     <ClCompile Include="src\test_TaskDispatcher4QtThread.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -78,6 +79,8 @@
       <AdditionalLibraryDirectories>$(QTDIR)\lib;$(OutDir);$(GTEST_ROOT_1_7_0)\bin\$(IntDir);$(BOOST_ROOT_1_55)\lib32-msvc-12.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Networkd.lib;Qt5Sqld.lib;Qt5Concurrentd.lib;Qt5Widgetsd.lib;%(AdditionalDependencies);gtest.lib;coasync4cpp.lib</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -94,6 +97,7 @@
       <AdditionalLibraryDirectories>$(QTDIR)\lib;$(OutDir);$(GTEST_ROOT_1_7_0)\bin\$(IntDir);$(BOOST_ROOT_1_55)\lib32-msvc-12.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Network.lib;Qt5Sql.lib;Qt5Concurrent.lib;Qt5Widgets.lib;%(AdditionalDependencies);gtest.lib;coasync4cpp.lib</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers />
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

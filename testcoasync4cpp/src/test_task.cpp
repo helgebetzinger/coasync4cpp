@@ -5,7 +5,7 @@
 #include "TaskDispatcher.h"
 #include "bind2thread.h"
 
-#include "await.h"
+#include "awaitables.h"
 
 class test_task : public ::testing::Test {
 protected:

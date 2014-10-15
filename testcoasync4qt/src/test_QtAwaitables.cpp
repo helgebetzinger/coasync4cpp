@@ -3,12 +3,15 @@
 
 #include "TaskDispatcher4QtThread.h"
 #include "bind2thread.h"
+#include "awaitables4qt.h"
+
+#include <QtConcurrent>
 
 // LOCAL
 
 #include "TestWithQCoreApplication.h"
 
-class test_TaskDispatcher4QtThread : public TestWithQCoreApplication  {
+class test_QtAwaitables : public TestWithQCoreApplication  {
 	
 	using super = TestWithQCoreApplication; 
 
@@ -43,27 +46,25 @@ protected:
 
 };
 
-TEST_F(test_TaskDispatcher4QtThread, post2QtCoreThread ) { 
+static QString latin1(const char * str ) {
+	return QLatin1String(str).latin1();
+}
+
+TEST_F(test_QtAwaitables, QFutureWithQtConcurrent ) {
 
 	std::shared_ptr<TaskDispatcher4QtThread> mainThread( TaskDispatcher4QtThread::create());
-	std::thread::id executingThread;
-	std::thread::id * executingThreadPtr(&executingThread);
+		
+	mainThread->postex( bindAsTask( [=] {
 
-	post2thread(secondThread(), [=] {
+		// example from http://blog.qt.digia.com/blog/2007/03/08/making-asynchronous-function-calls-with-qfuture/ 
 
-		post2thread(mainThread, [=] {
-			*executingThreadPtr = std::this_thread::get_id();
-		});
+		QString s = await QtConcurrent::run(std::bind(latin1, "Hello World"));
 
 		quitQtMsgLoop();
 
-	});
-
+	})) ;
+		
 	execQtMsgLoop();
-
-	EXPECT_EQ(std::this_thread::get_id(), executingThread);
-	EXPECT_NE(thread->get_id(), executingThread);
-
 }
 
 

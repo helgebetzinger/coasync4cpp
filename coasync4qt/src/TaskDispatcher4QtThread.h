@@ -51,9 +51,7 @@ private:
 	}
 
 	inline void onAbort()  {
-		this->post([] {
-			::resetCurrentThread();
-		});
+		this->post( std::bind( ::resetCurrentThread ));
 	}
 
 private Q_SLOTS:

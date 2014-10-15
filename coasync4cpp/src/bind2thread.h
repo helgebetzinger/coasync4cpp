@@ -19,6 +19,7 @@ auto post2current( std::function<void(void)>&& foo) -> QueuePos {
 	return post2thread( currentThread(), std::move(foo)); 
 }
 
+
 template< typename... Signature > struct BindHelper;
 
 // helper for Bind2Current specialization for function objects:
@@ -35,7 +36,8 @@ struct BindHelper< typename F, RetType(X::*)(Ts...) const > {
 	static QueuePos send2thread(std::weak_ptr<TaskDispatcher> dispatcher, const F& foo, const Ts&... args) {
 		return ::send2thread(dispatcher, std::bind(foo, args ...));
 	}
-	static Task< boost::future< typename RetType > > make_task(const F& foo, const Ts&... args) {
+	static Task< boost::future< typename RetType > > task(const F& f, const Ts&... args) {
+		return ::make_task(f, args ...);
 	}
 };
 

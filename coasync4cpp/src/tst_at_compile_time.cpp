@@ -149,3 +149,17 @@ static void testBind2thread() {
 
 }
 
+static void testBindAsTask() {
+
+	SimpleStruct s;
+	MyArglessFunctionObject o;
+
+	bindAsTask( foo_w_r_InInt, 0, 1 );
+	bindAsTask( foo_w_r_InInt, 0, std::placeholders::_1 );
+
+	MyFunctionObjectOneArg p;
+	bindAsTask( p, 0 );
+
+	bindAsTask([]() { int i = 0; ++i; }); 
+
+}

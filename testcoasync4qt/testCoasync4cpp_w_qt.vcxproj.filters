@@ -10,6 +10,9 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_TaskDispatcher4QtThread.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\test_QtAwaitables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\stdafx.h">

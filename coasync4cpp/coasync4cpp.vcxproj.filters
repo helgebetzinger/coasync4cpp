@@ -36,7 +36,7 @@
     <ClInclude Include="src\taskify.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\await.h">
+    <ClInclude Include="src\awaitables.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

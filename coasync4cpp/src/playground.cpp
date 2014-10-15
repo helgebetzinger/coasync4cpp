@@ -138,3 +138,29 @@ static void testInstallThreadAdapter() {
 
 // copy/move semantic in Task checken ... 
 
+//std::future<ptrdiff_t> tcp_reader(int total) // -> hat eigenen Stack , ist also taskified ... 
+//{
+//	char buf[64 * 1024];
+//	ptrdiff_t result = 0;
+//	auto conn = await Tcp::Connect("127.0.0.1", 1337); // Tcp::Connect entspricht hier einem alloca(x) 
+//		
+//	// -> hat eigenen Stack , wenn coRoutine, dann diesen Stack mitnutzen .. ?!
+//	// bei Rückkehr aus Connect den aktuellen Stack der Unter-CoRutine als "buffer" auf dem Stack hinterlegen (alloca??)
+//
+//	// beim resume müssten wir den Stackpointer soweit verschieben, daß wir einen verfügbaren Speicherbereich bekommen
+//	// so können wir einen einzigen großen Stack für unsere Funktionen nutzen.
+//	// die aktuelle Methode muss dann stets zu Beginn des freien, großen Bereiches mit ihrem Stack fortfahren
+//	// Problem 1: bestimmte Bereiche werden dann aber sehr lange NICHT mehr freigegeben und zerklüftet! 
+//	// wir müssten, wenn der Stack an einen belegten Block heranrückt, das erkennen und den Block irgendwie überspringen können ... 
+//	// -> hier müssten aber signale/exceptions dafür existieren ?!
+//	// Problem 2: wir verlieren 1k bei jedem einzelnen Resume! (außer, es war die letzte Routine oder wir kommen direkt 
+//	// aus dem Parent ... 
+//
+//	do
+//	{
+//		auto bytesRead = await conn.Read(buf, sizeof(buf));
+//		total -= bytesRead;
+//		result += std::count(buf, buf + bytesRead, 'c');
+//	} while (total > 0);
+//	return result;
+//}

@@ -75,12 +75,13 @@ auto set_value(PromiseType&& promise, FooType&& foo) -> typename std::enable_if<
 	}
 }
 
+template<typename F> struct Task;
 
-template< typename FutureType > struct Task : public FutureType 
+template< typename FutureValue > struct Task < boost::future< FutureValue > > : public boost::future< FutureValue > 
 {
-	using super = typename FutureType;
-	using FutureValue = typename remove_const_reference<FutureType>::type;
-	using Result = typename FutureValue::value_type;
+	using super = typename boost::future< FutureValue >;
+	using FutureType = typename boost::future < FutureValue >;
+	using Result = typename FutureValue; 
 	
 	// LIFECYCLE 
 
@@ -119,7 +120,7 @@ template< typename FutureType > struct Task : public FutureType
 
 				// Attention: 'then' might callback us wihtin any thread context!
 
-				/*future*/ auto result = this->then([current_coro](FutureValue ready) -> Result
+				/*future*/ auto result = this->then([current_coro](FutureType ready) -> Result
 				{
 					// We are within the context of async operation and have its result here within 'ready'. Current thread
 					// need not to be the original thread , its simple the thread that was used by the async operation. 
