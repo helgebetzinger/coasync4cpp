@@ -24,13 +24,19 @@ this can now be replaced by a single line of code:
 
 You save an complete callback, you have not longer to manage the QFuture/QFutureWatcher things. You simply write your code from top to bottom. As it is with synchronous code.
 
-`QtConcurrent::run` returns here an `QFuture`. This is called an Awaitable. coasync4cpp currently supports a bunch of Awaitables: 
+`QtConcurrent::run` returns here an `QFuture`. This is called an Awaitable. 
+
+### Awaitables 
+
+An operation, that is already running and promises to you to deliver an result in the future is called an 'Awaitable'. 
+
+coasync4cpp currently supports a bunch of Awaitables: 
 * boost::future
 * QFuture
 * Task<>
 
+We can await an Awaitbale using the `Task<>` object or `await` keyword. But, these awaits are only allowed within an asyncronous execution context. This create such an context, we use Task Factories. 
 
-### Awaitables 
 ### TaskFactories
 ### Thread Dispatcher
 ### How to start 
