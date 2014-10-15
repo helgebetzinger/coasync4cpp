@@ -48,6 +48,8 @@ We can await an Awaitbale using the `Task<>` object or `await` keyword. But, the
 
 If you spot a bug or want to brainstorm a potential new feature, then please raise an issue in our main GitHub project (helgebetzinger/coasync4cpp); likewise if you have developed a cool new feature or improvement in your coasync4cpp fork, then send us a pull request!
 
+For the wiki and readme.me, we use markdown syntax. We have good experiences using this [online editor](http://dillinger.io/).
+
 ## Documentation
 
 * [Documentation within the coasync4cpp repository](https://github.com/helgebetzinger/coasync4cpp/tree/master/doc)
