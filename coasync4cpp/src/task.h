@@ -105,7 +105,7 @@ template< typename FutureValue > struct Task < boost::future< FutureValue > > : 
 	
 	Result get() {
 		try {
-			if ( is_ready()) {
+			if ( this->is_ready()) {
 				// egal, wo wir sind:
 				return super::get();
 			}
