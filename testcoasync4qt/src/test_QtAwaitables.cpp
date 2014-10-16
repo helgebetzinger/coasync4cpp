@@ -50,7 +50,7 @@ static QString latin1(const char * str ) {
 	return QLatin1String(str).latin1();
 }
 
-TEST_F(test_QtAwaitables, QFutureWithQtConcurrent ) {
+TEST_F(test_QtAwaitables, AwaitQtFuture) {
 
 	std::shared_ptr<TaskDispatcher4QtThread> mainThread( TaskDispatcher4QtThread::create());
 		
@@ -66,7 +66,26 @@ TEST_F(test_QtAwaitables, QFutureWithQtConcurrent ) {
 	})) ;
 		
 	execQtMsgLoop();
+	resetCurrentThread(); 
+	
 }
 
+TEST_F(test_QtAwaitables, SaveTaskAndGetLaterFromQtFuture ) {
+
+	std::shared_ptr<TaskDispatcher4QtThread> mainThread(TaskDispatcher4QtThread::create());
+	Task<QString> task = QtConcurrent::run(std::bind(latin1, "Hello second World"));
+
+	mainThread->postex(bindAsTask([&] {
+
+		QString s = task; 
+		EXPECT_EQ(s, "Hello second World");
+
+		quitQtMsgLoop();
+
+	}));
+
+	execQtMsgLoop();
+	resetCurrentThread();
+}
 
 

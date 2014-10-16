@@ -60,6 +60,7 @@ TEST_F(test_TaskDispatcher4QtThread, post2QtCoreThread ) {
 	});
 
 	execQtMsgLoop();
+	resetCurrentThread();
 
 	EXPECT_EQ(std::this_thread::get_id(), executingThread);
 	EXPECT_NE(thread->get_id(), executingThread);
