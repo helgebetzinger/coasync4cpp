@@ -30,8 +30,8 @@ struct BindHelper< typename F, RetType(X::*)(Ts...) const > {
 	static QueuePos post2thread_w_args(std::weak_ptr<TaskDispatcher> dispatcher, const F& foo, const Ts&... args) {
 		return ::post2thread(dispatcher, std::bind(foo, args ...));
 	}
-	static QueuePos post2thread_wo_args(std::weak_ptr<TaskDispatcher> dispatcher, const F& foo, const Ts&... args) {
-		return ::post2thread(dispatcher, std::bind(foo, args ...));
+	static QueuePos post2thread_wo_args(std::weak_ptr<TaskDispatcher> dispatcher, const F& foo ) {
+		return ::post2thread(dispatcher, std::bind(foo));
 	}
 	static QueuePos send2thread(std::weak_ptr<TaskDispatcher> dispatcher, const F& foo, const Ts&... args) {
 		return ::send2thread(dispatcher, std::bind(foo, args ...));
@@ -52,8 +52,8 @@ struct Bind2Proxy < RetType(*)(Ts...) > {
 	static QueuePos post2thread_w_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(*f)(Ts...), const Ts&... args) {
 		return ::post2thread(dispatcher, std::bind((void_foo_type)(f), args...));
 	}
-	static QueuePos post2thread_wo_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(*f)(Ts...), const Ts&... args) {
-		return ::post2thread(dispatcher, std::bind((void_foo_type)(f), args...));
+	static QueuePos post2thread_wo_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(*f)() ) {
+		return ::post2thread(dispatcher, std::bind((void_foo_type)(f)));
 	}
 	static QueuePos send2thread(std::weak_ptr<TaskDispatcher> dispatcher, RetType(*f)(Ts...), const Ts&... args) {
 		return ::send2thread(dispatcher, std::bind((void_foo_type)(f), args...));
@@ -71,8 +71,8 @@ struct Bind2Proxy < RetType(&)(Ts...) > {
 	static QueuePos post2thread_w_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(&f)(Ts...), const Ts&... args) {
 		return ::post2thread(dispatcher, std::bind((void_foo_type)(f), args...));
 	}
-	static QueuePos post2thread_wo_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(&f)(Ts...), const Ts&... args) {
-		return ::post2thread(dispatcher, std::bind((void_foo_type)(f), args...));
+	static QueuePos post2thread_wo_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(&f)()) {
+		return ::post2thread(dispatcher, std::bind((void_foo_type)(f)));
 	}
 	static QueuePos send2thread(std::weak_ptr<TaskDispatcher> dispatcher, RetType(&f)(Ts...), const Ts&... args) {
 		return ::send2thread(dispatcher, std::bind((void_foo_type)(f), args...));
@@ -92,9 +92,8 @@ struct Bind2Proxy < RetType(X::*)(Ts...) const > {
 	static QueuePos post2thread_w_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(X::* constMemberF)(Ts...) const, const FirstParam& obj, const Ts&... args) {
 		return ::post2thread(dispatcher, std::bind((void_foo_type)(constMemberF), obj, args...));
 	}
-	static QueuePos post2thread_wo_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(X::* constMemberF)(Ts...) const, void* obj, const Ts&... args) {
-		static_assert(false, "we should never go here!");
-		return ::post2thread(dispatcher, std::bind((void_foo_type)(constMemberF), static_cast<X*> (obj), args...));
+	static QueuePos post2thread_wo_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(X::* constMemberF)() const, void* obj) {
+		return ::post2thread(dispatcher, std::bind((void_foo_type)(constMemberF), static_cast<X*> (obj)));
 	}
 	static QueuePos send2thread(std::weak_ptr<TaskDispatcher> dispatcher, RetType(X::* constMemberF)(Ts...) const, void* obj, const Ts&... args) {
 		return ::send2thread(dispatcher, std::bind((void_foo_type)(constMemberF),  static_cast<X*> (obj), args...));
@@ -115,8 +114,8 @@ struct Bind2Proxy < RetType(X::*)(Ts...) > {
 	static QueuePos post2thread_w_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(X::* memberF)(Ts...), const FirstParam& obj, const Ts&... args) {
 		return ::post2thread(dispatcher, std::bind((void_foo_type)(memberF), obj, args...));
 	}
-	static QueuePos post2thread_wo_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(X::* memberF)(Ts...), void * obj, const Ts&... args) {
-		return ::post2thread(dispatcher, std::bind((void_foo_type)(memberF), static_cast<X*> (obj), args...));
+	static QueuePos post2thread_wo_args(std::weak_ptr<TaskDispatcher> dispatcher, RetType(X::* memberF)(), void * obj) {
+		return ::post2thread(dispatcher, std::bind((void_foo_type)(memberF), static_cast<X*> (obj)));
 	}
 	static QueuePos send2thread(std::weak_ptr<TaskDispatcher> dispatcher, RetType(X::* memberF)(Ts...), void * obj, const Ts&... args) {
 		return ::send2thread(dispatcher, std::bind((void_foo_type)(memberF), static_cast<X*> (obj), args...));
@@ -132,7 +131,7 @@ auto bind2thread(const TaskDispatcherWeakPtr& thread, Signature foo, FirstT&& ar
 -> decltype(std::bind(&Bind2Proxy<Signature>::post2thread_w_args< remove_const_reference<FirstT>::type >, thread, foo, std::forward<FirstT>(arg0), std::forward<Ts>(args)...))
 {
 	// more optimazations possible using : http://stackoverflow.com/questions/687490/how-do-i-expand-a-tuple-into-variadic-template-functions-arguments ??
-	// bzw.: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3579.html ?
+	// or http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3579.html ?
 	
 	// improve Performance further: http://blog.coldflake.com/posts/2014-01-12-C%2B%2B-delegates-on-steroids.html 
 
