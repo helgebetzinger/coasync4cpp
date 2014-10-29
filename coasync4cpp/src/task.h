@@ -32,6 +32,8 @@ typedef boost::coroutines::coroutine<void()> coro_pull;
 typedef boost::coroutines::coroutine<void()>::caller_type coro_push;
 #endif
 
+
+
 struct CurrentCoro
 {
 	TaskDispatcherWeakPtr context;
@@ -52,28 +54,7 @@ public:
 
 extern Coro_stack& co_stack();
 
-template< typename PromiseType, typename FooType >
-auto set_value(PromiseType&& promise, FooType&& foo) -> typename std::enable_if< std::is_same< typename function_traits< typename FooType >::return_type, void >::value>::type
-{
-	try {
-		foo();
-		promise.set_value();
-	}
-	catch (...) {
-		promise.set_exception( std::current_exception());
-	}
-}
 
-template< typename PromiseType, typename FooType > 
-auto set_value(PromiseType&& promise, FooType&& foo) -> typename std::enable_if< !std::is_same< typename function_traits< typename FooType >::return_type, void >::value>::type
-{
-	try {
-		promise.set_value(foo());
-	}
-	catch (...) {
-		promise.set_exception( std::current_exception());
-	}
-}
 
 template<typename F> struct Task;
 
@@ -156,6 +137,74 @@ template< typename FutureValue > struct Task < boost::future< FutureValue > > : 
 
 };
 
+
+
+class Awaitable : boost::noncopyable {
+
+public:
+
+	Awaitable() = default;
+	~Awaitable() = default;
+
+	/// true, if an result is available without to block current coroutine
+	virtual bool isReady() const = 0;
+	virtual void onReady(const std::function< void(void) >&) = 0;
+	virtual void get(void *) = 0;
+
+	/// blocks current coroutine, until result is available. If necessary, it saves an exception within 
+	/// mException.
+	void awaitReady();
+	/// if an exception was the result of the Awaitbale, this exception is rethrown now.
+	void try_rethrow_exception();
+
+private:
+
+	std::exception_ptr mException;
+};
+
+template< typename FutureValue > struct TaskEx  {
+
+	using Result = typename FutureValue;
+
+	// LIFECYCLE 
+
+	TaskEx(TaskEx &&ft) {
+		mAwaitable.swap(ft.mAwaitable);
+	}
+
+	template<typename T>
+	TaskEx(T&& t) : mAwaitable(make_awaitable(std::move(t))) {
+	}
+
+	TaskEx& operator = (TaskEx&& ft) {
+		mAwaitable.swap(ft.mAwaitable);
+		return *this;
+	}
+
+	TaskEx(const TaskEx &ft) = delete;
+	TaskEx& operator = (const TaskEx& arg) = delete;
+
+	// INQUIRY 
+
+	Result get() {
+		mAwaitable->awaitReady();
+		mAwaitable->try_rethrow_exception();
+		// TODO: probably this destroys return value optimization of the compiler: 
+		Result r;
+		mAwaitable->get(&r);
+		return r;
+	}
+
+	operator Result ()	{
+		return get();
+	}
+
+private:
+
+	std::unique_ptr<Awaitable> mAwaitable;
+
+};
+
 template<typename T>
 struct is_task_type
 {
@@ -169,6 +218,30 @@ struct is_task_type < Task<T> >
 	static const bool value = true;
 	typedef T type;
 };
+
+
+template< typename PromiseType, typename FooType >
+auto set_value(PromiseType&& promise, FooType&& foo) -> typename std::enable_if< std::is_same< typename function_traits< typename FooType >::return_type, void >::value>::type
+{
+	try {
+		foo();
+		promise.set_value();
+	}
+	catch (...) {
+		promise.set_exception(std::current_exception());
+	}
+}
+
+template< typename PromiseType, typename FooType >
+auto set_value(PromiseType&& promise, FooType&& foo) -> typename std::enable_if< !std::is_same< typename function_traits< typename FooType >::return_type, void >::value>::type
+{
+	try {
+		promise.set_value(foo());
+	}
+	catch (...) {
+		promise.set_exception(std::current_exception());
+	}
+}
 
 template< typename Foo, typename ...  Args >
 auto make_task(Foo&& foo, Args&&... args)->Task < boost::future< typename function_traits< Foo >::return_type > > 

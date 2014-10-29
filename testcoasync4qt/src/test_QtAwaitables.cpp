@@ -73,7 +73,7 @@ TEST_F(test_QtAwaitables, AwaitQtFuture) {
 TEST_F(test_QtAwaitables, SaveTaskAndGetLaterFromQtFuture ) {
 
 	std::shared_ptr<TaskDispatcher4QtThread> mainThread(TaskDispatcher4QtThread::create());
-	Task<QString> task = QtConcurrent::run(std::bind(latin1, "Hello second World"));
+	TaskEx<QString> task = QtConcurrent::run(std::bind(latin1, "Hello second World"));
 
 	mainThread->postex(bindAsTask([&] {
 
