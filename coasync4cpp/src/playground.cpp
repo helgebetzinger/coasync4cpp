@@ -168,127 +168,127 @@ static void testInstallThreadAdapter() {
 
 // parallel coroutines, die am Ende zusammenfallen:
 
-connect(rep, SIGNAL(finished()), this, SLOT(uploadFinish()));
-connect(rep, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(uploadError(QNetworkReply::NetworkError)));
-connect(rep, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(uploadProgress(qint64, qint64)));
-
-// from http://meetingcpp.com/tl_files/mcpp/slides/12/hpx_slides.pdf 
-Composition of asynchronous operations(N3428)
-
-hpx::when_all
-,
-hpx::when_any
-,
-hpx::when_n
-
-hpx::future<T>::then(f)
-
-// await awaits anything, that implements parts of the future interface.
-// for other Awaitables a factory method needs to be implemented, that adds this interface (class Awaitable!) for usage by await/await_all/await_any ... 
-
-await // any Awaitable with implicit Awaitbale factory  
-wait_all, , , // any Awaitable or Awaitables, with implicit Awaitbale factory  -> await_all boost::async(foo), async_timeout(50); 
-await_any, , ,
-
-future<X> resumable( foo ); 
-
-IAwaitbale( is_ready, then, ... )
-   /\
-Awaitbale<X> (implements parts of the Future Interface, converts implizit to X). 
-   / \
-QFutureAwaitable<>
-
-
-
-// v1: 
-// is_iterable, is_range, @see http://boost.2283326.n4.nabble.com/type-traits-Request-is-iterable-td4642153.html 
-// is_iterable, is_range, @see http://stackoverflow.com/questions/14439479/detecting-whether-something-is-boost-range-with-sfinae 
-class AwaitAll : public Awaitable {
-	AwaitAll(  )
-};
-
-class AwaitableList {
-	template< > 
-	void push_back( a ) {
-		// emplace ... 
-		mAwaitables.make_awaitable(a); 
-	}
-	void push_back( Awaitable ) {
-		// emplace ... 
-		mAwaitables.push_back(a);
-	}
-	void push_back(AwaitableList) {
-		// emplace ... 
-		mAwaitables.push_back(a);
-	}
-	std::vector< Awaitable > mAwaitables;
-};
-
-class AwaitAny : public Awaitable {
-
-public:
-
-	template< > AwaitAny( blabla ) : mValue(value) { 
-		// copy into 
-	}
-
-	AwaitAny(const QFuture < FutureValue >& value) : mValue(value) {
-	}
-
-	virtual bool isReady() const override {
-		return mValue.isFinished();
-	}
-	virtual void then(const std::function< void(void) >& onReadyEvent) override {
-		QObject::connect(&mWatcher, &QFutureWatcher<FutureValue>::finished, onReadyEvent);
-		mWatcher.setFuture(mValue);
-	}
-	virtual void get(void * r) override {
-		(*reinterpret_cast<FutureValue*>(r)) = mValue.result();
-	}
-
-	// extension, to make await faster: 
-	FutureValue get() const {
-		return mValue.result();
-	}
-
-private:
-
-	QFuture < FutureValue > mValue;
-	QFutureWatcher<FutureValue> mWatcher;
-
-};
-
+//connect(rep, SIGNAL(finished()), this, SLOT(uploadFinish()));
+//connect(rep, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(uploadError(QNetworkReply::NetworkError)));
+//connect(rep, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(uploadProgress(qint64, qint64)));
+//
+//// from http://meetingcpp.com/tl_files/mcpp/slides/12/hpx_slides.pdf 
+//Composition of asynchronous operations(N3428)
+//
+//hpx::when_all
+//,
+//hpx::when_any
+//,
+//hpx::when_n
+//
+//hpx::future<T>::then(f)
+//
+//// await awaits anything, that implements parts of the future interface.
+//// for other Awaitables a factory method needs to be implemented, that adds this interface (class Awaitable!) for usage by await/await_all/await_any ... 
+//
+//await // any Awaitable with implicit Awaitbale factory  
+//wait_all, , , // any Awaitable or Awaitables, with implicit Awaitbale factory  -> await_all boost::async(foo), async_timeout(50); 
+//await_any, , ,
+//
+//future<X> resumable( foo ); 
+//
+//IAwaitbale( is_ready, then, ... )
+//   /\
+//Awaitbale<X> (implements parts of the Future Interface, converts implizit to X). 
+//   / \
+//QFutureAwaitable<>
+//
+//
+//
+//// v1: 
+//// is_iterable, is_range, @see http://boost.2283326.n4.nabble.com/type-traits-Request-is-iterable-td4642153.html 
+//// is_iterable, is_range, @see http://stackoverflow.com/questions/14439479/detecting-whether-something-is-boost-range-with-sfinae 
+//class AwaitAll : public Awaitable {
+//	AwaitAll(  )
+//};
+//
+//class AwaitableList {
+//	template< > 
+//	void push_back( a ) {
+//		// emplace ... 
+//		mAwaitables.make_awaitable(a); 
+//	}
+//	void push_back( Awaitable ) {
+//		// emplace ... 
+//		mAwaitables.push_back(a);
+//	}
+//	void push_back(AwaitableList) {
+//		// emplace ... 
+//		mAwaitables.push_back(a);
+//	}
+//	std::vector< Awaitable > mAwaitables;
+//};
+//
+//class AwaitAny : public Awaitable {
+//
+//public:
+//
+//	template< > AwaitAny( blabla ) : mValue(value) { 
+//		// copy into 
+//	}
+//
+//	AwaitAny(const QFuture < FutureValue >& value) : mValue(value) {
+//	}
+//
+//	virtual bool isReady() const override {
+//		return mValue.isFinished();
+//	}
+//	virtual void then(const std::function< void(void) >& onReadyEvent) override {
+//		QObject::connect(&mWatcher, &QFutureWatcher<FutureValue>::finished, onReadyEvent);
+//		mWatcher.setFuture(mValue);
+//	}
+//	virtual void get(void * r) override {
+//		(*reinterpret_cast<FutureValue*>(r)) = mValue.result();
+//	}
+//
+//	// extension, to make await faster: 
+//	FutureValue get() const {
+//		return mValue.result();
+//	}
+//
+//private:
+//
+//	QFuture < FutureValue > mValue;
+//	QFutureWatcher<FutureValue> mWatcher;
+//
+//};
+//
 
 // http://stackoverflow.com/questions/20566192/qnetworkmanager-uploading-file-to-ftp-crash
 
-Task<ERROR> error = taskify(&QNetworkReply::NetworkError, this);
-Task< tuple<qint64, qint64> > progress = taskify(&QNetworkReply::downloadProgress, this);
-Task<void> done = taskify(&QNetworkReply::finished, this);
-Task<void> timeout = sleepAsync(50); 
-Task<void> ctrlC = keyPressed .. 
-
-while(true) {
-
-	await_any error, progress, done, timeout, ctrlC;
-	AwaitAll( std::vector < Awaitable >) {
-		foreach() {
-
-		}
-	}
-	await_any( std::vector < Awaitable > )
-
-	
-	if (done.is_ready()) {
-		break;
-	}
-	else if (error.is_ready()) {
-		break;
-	}
-	else {
-		// update ui .. 
-	}
-
-}
-
+//Task<ERROR> error = taskify(&QNetworkReply::NetworkError, this);
+//Task< tuple<qint64, qint64> > progress = taskify(&QNetworkReply::downloadProgress, this);
+//Task<void> done = taskify(&QNetworkReply::finished, this);
+//Task<void> timeout = sleepAsync(50); 
+//Task<void> ctrlC = keyPressed .. 
+//
+//while(true) {
+//
+//	await_any error, progress, done, timeout, ctrlC;
+//	AwaitAll( std::vector < Awaitable >) {
+//		foreach() {
+//
+//		}
+//	}
+//	await_any( std::vector < Awaitable > )
+//
+//	
+//	if (done.is_ready()) {
+//		break;
+//	}
+//	else if (error.is_ready()) {
+//		break;
+//	}
+//	else {
+//		// update ui .. 
+//	}
+//
+//}
+//
 
 
