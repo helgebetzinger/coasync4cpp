@@ -91,6 +91,9 @@ last command with:
 
   cmake -Dbuild_tests=ON ${COASYNC_DIR}
 
+A full call to cmake could than look like: 
+    e.g.: C:\Projects\coasync4cpp\build>"C:\Program Files (x86)\CMake\bin\cmake" -Dbuild_coasync4qt=ON -Dbuild_tests=ON C:\Projects\coasync4cpp\build -G "Visual Studio 12 2013" 
+  
 If you are on a *nix system, you should now see a Makefile in the
 current directory.  Just type 'make' to build gtest.
 

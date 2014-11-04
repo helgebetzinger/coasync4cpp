@@ -3,7 +3,7 @@
 
 #include "TaskDispatcher4QtThread.h"
 #include "bind2thread.h"
-#include "awaitables4qt.h"
+#include "QFutureAwaitable.h"
 
 #include <QtConcurrent>
 

@@ -105,6 +105,8 @@ macro (make_filelist baseDir build_sources build_headers)
 	
 endmacro (make_filelist)
 
-
-
-
+macro ( project_group target_name target_group ) 
+	# Organize projects into folders, @see http://athile.net/library/blog/?p=288 
+	set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+	set_property( TARGET ${target_name}  PROPERTY FOLDER ${target_group} )
+endmacro ( project_group ) 

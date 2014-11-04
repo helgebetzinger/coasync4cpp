@@ -1,4 +1,6 @@
 
+
+
 # root cmake file
 
 # todo
@@ -29,6 +31,8 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_CXX_COMPILER_ID}" )
 set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_CXX_COMPILER_ID}" )
 set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_CXX_COMPILER_ID}" )	
+
+include (utils)
 
 # Platform dependent defines
 if ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" ) 
@@ -62,6 +66,7 @@ link_directories (${Boost_LIBRARY_DIR})
 
 message ( STATUS "\tcreate coasync4cpp..." )
 add_subdirectory (coasync4cpp)
+project_group( coasync4cpp   "Libs")
 
 ####### coasync4qt 
 
@@ -69,6 +74,7 @@ if (build_coasync4qt)
 
 	message ( STATUS "\tcreate coasync4qt..." )
 	add_subdirectory (coasync4qt)
+    project_group( coasync4qt   "Libs")
 
 endif()
 
@@ -79,15 +85,19 @@ if (build_tests)
 	set( gtest_build_samples OFF )
 	add_subdirectory(gtest-1.7.0)
 	include_directories( ${CMAKE_SOURCE_DIR}/gtest-1.7.0/include )
+    project_group( gtest   "Tests")
+    project_group( gtest_main   "Tests")
 endif()
 
 if (build_tests)
 	add_subdirectory(testcoasync4cpp)
+    project_group( testcoasync4cpp   "Tests")
 endif()
 
 if (build_tests )
 if (build_coasync4qt)
 	add_subdirectory(testcoasync4qt)
+	project_group( testcoasync4qt "Tests" )
 endif()
 endif()
 
