@@ -5,7 +5,7 @@ coasync4cpp allows to write async code without callbacks using async/await/task!
 [![Build Status](https://travis-ci.org/helgebetzinger/coasync4cpp.png?branch=dev-cmake)]
  (https://travis-ci.org/helgebetzinger/coasync4cpp)
 
- ## async/await 
+## async/await 
 
 This library let you use the async/await pattern, known from c#, for your c++ or qt projects. You can define any method as 'async' and than make use of the await or Task<> keywords of the library.  
 
