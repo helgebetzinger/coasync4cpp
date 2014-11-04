@@ -29,6 +29,6 @@ before_script:
 script:
 - mkdir _builds
 - cd _builds
-- cmake ..
+- cmake -Dbuild_tests=ON ..
 # - make
 # - ctest
