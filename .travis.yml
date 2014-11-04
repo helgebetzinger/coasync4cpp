@@ -1,28 +1,16 @@
-language: cpp
+language:
+- cpp
 compiler:
 - gcc
 - clang
 before_install:
-- sudo apt-get update -qq
-- sudo apt-get install libboost-dev libboost-regex-dev
+- sudo add-apt-repository ppa:apokluda/boost1.55 -y
+- sudo apt-get update
+install:
+- sudo apt-get install libboost1.55-dev
 script:
-- mkdir -p build
-- cd build
-- cmake -Dbuild_tests=ON -DCMAKE_CXX_FLAGS="-Wall -pedantic -Werror Wno-shadow" ..
-- make -j8
-#- ./example/list_devices
-#- ctest --output-on-failure
-#- ctest --output-on-failure
-branches:
-  only:
-    - dev-cmake
-notifications:
-  recipients:
-  - helge.betzinger@googlemail.com
-  email:
-    on_success: change
-    on_failure: always
-after_success:
-#- lcov --directory test --base-directory ../include/boost/compute/ --capture --output-file coverage.info
-#- lcov --remove coverage.info '/usr*' -o coverage.info
-#- cd .. && coveralls-lcov build/coverage.info
+- mkdir _builds
+- cd _builds
+- cmake ..
+# - make
+# - ctest
