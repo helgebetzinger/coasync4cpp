@@ -11,7 +11,7 @@ https://code.google.com/p/googletest/wiki/V1_7_Primer
 https://code.google.com/p/googletest/wiki/V1_7_AdvancedGuide
 */
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();

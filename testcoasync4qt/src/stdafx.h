@@ -6,10 +6,7 @@
 #pragma once
 
 
-#include <stdio.h>
-#include <tchar.h>
 
-#define BOOST_THREAD_VERSION 4 
 
 // TODO: reference additional headers your program requires here
 
