@@ -7,7 +7,7 @@ before_install:
 # Add software package repository, containing updated build toochain, i.e. GNU GCC 4.8
 # - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test 
 - sudo add-apt-repository --yes ppa:chewing/travis-ci/cmake # cmake 3.02 
-- sudo add-apt-repository --yes ppa:ostogvin/tjo-develop # boost 1.55 
+- sudo add-apt-repository --yes ppa:libboost1.55-tools-dev # boost 1.55 
 # - sudo add-apt-repository --yes ppa:kubuntu-ppa/backports # cmake >=2.8.10
 - sudo apt-get update -qq
 # Download boost 1.5 and extract the source archive
