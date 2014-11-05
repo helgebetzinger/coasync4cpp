@@ -134,7 +134,7 @@ struct MakeTaskifyCallback {
 
 	// Printer< std::integral_constant<int, cPosOfException> > printer;
 
-	using TypeOfCallback = typename remove_const_reference < typename function_traits<Signature>::argument< cPosOfCallback >::type >::type;
+	using TypeOfCallback = typename remove_const_reference < typename function_traits<Signature>::template argument< cPosOfCallback >::type >::type;
 
 //	Printer<  typename remove_const_reference < typename function_traits<Signature>::argument< cPosOfCallback >::type >::type > printer;
 
