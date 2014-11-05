@@ -33,6 +33,7 @@ set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAM
 set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_CXX_COMPILER_ID}" )	
 
 include (utils)
+include (CheckCXXCompilerFlag)
 
 # Platform dependent defines
 if ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" ) 
@@ -40,9 +41,21 @@ if ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
 	set( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO"  )
 	message ( STATUS "\t output linker flags  ${CMAKE_EXE_LINKER_FLAGS} ..." )
 endif()
-	
-message ( STATUS "\t output dir ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ..." )
-message ( STATUS "\t system: ${CMAKE_SYSTEM_NAME} " )
+
+# enable compiler specific support for c++11 : 
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+if(COMPILER_SUPPORTS_CXX11)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+elseif(COMPILER_SUPPORTS_CXX0X)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+else()
+    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
+
+message( STATUS "\t output dir ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ..." )
+message( STATUS "\t system: ${CMAKE_SYSTEM_NAME} " )
+message( STATUS "\t CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS} ")
 
 ####### boost  
 # we need to configure boost here, because of the automatic linker option on windows.
