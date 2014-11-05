@@ -128,7 +128,7 @@ struct Bind2Proxy < RetType(X::*)(Ts...) > {
 
 template< typename Signature, typename FirstT, typename ... Ts >
 auto bind2thread(const TaskDispatcherWeakPtr& thread, Signature foo, FirstT&& arg0, Ts&&... args)
--> decltype(std::bind(&Bind2Proxy<Signature>::post2thread_w_args< typename remove_const_reference<FirstT>::type >, thread, foo, std::forward<FirstT>(arg0), std::forward<Ts>(args)...))
+-> decltype(std::bind( &Bind2Proxy<Signature>::template post2thread_w_args< typename remove_const_reference<FirstT>::type >, thread, foo, std::forward<FirstT>(arg0), std::forward<Ts>(args)...))
 {
 	// more optimazations possible using : http://stackoverflow.com/questions/687490/how-do-i-expand-a-tuple-into-variadic-template-functions-arguments ??
 	// or http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3579.html ?
@@ -136,7 +136,7 @@ auto bind2thread(const TaskDispatcherWeakPtr& thread, Signature foo, FirstT&& ar
 	// improve Performance further: http://blog.coldflake.com/posts/2014-01-12-C%2B%2B-delegates-on-steroids.html 
 
 	static_assert(function_traits<Signature>::arity_w_obj == sizeof...(Ts) + 1 , "number of arguments does not fit method signature!");
-	return std::bind( &Bind2Proxy<Signature>::post2thread_w_args< typename remove_const_reference<FirstT>::type >, thread, foo, std::forward<FirstT>(arg0), std::forward<Ts>(args)...);
+	return std::bind(&Bind2Proxy<Signature>::template post2thread_w_args< typename remove_const_reference<FirstT>::type >, thread, foo, std::forward<FirstT>(arg0), std::forward<Ts>(args)...);
 }
 
 template< typename Signature >
