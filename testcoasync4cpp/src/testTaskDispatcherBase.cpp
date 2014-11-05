@@ -36,16 +36,16 @@ TEST_F(testTaskDispatcherBase, isCurrentThread) {
 
 TEST_F(testTaskDispatcherBase, postLValue) {
 	PostMethod m(std::bind([]() { /* dummy */ }));
-	EXPECT_TRUE(m);
+	EXPECT_TRUE(m != 0);
 	EXPECT_EQ(0, mTasks.post(m));
-	EXPECT_TRUE(m) << "method pointer should be copied into the dispatcher";
+	EXPECT_TRUE(m != 0) << "method pointer should be copied into the dispatcher";
 }
 
 TEST_F(testTaskDispatcherBase, postRValue) {
 	PostMethod m(std::bind([]() { /* dummy */ }));
-	EXPECT_TRUE( m );
+	EXPECT_TRUE(m != 0);
 	EXPECT_EQ(0, mTasks.post( std::move( m )));
-	EXPECT_FALSE(m) << "method pointer should be 'swapped' into the dispatcher";
+	EXPECT_FALSE(m != 0) << "method pointer should be 'swapped' into the dispatcher";
 }
 
 TEST_F(testTaskDispatcherBase, activationAfterPost ) {
