@@ -5,8 +5,9 @@ compiler:
 - gcc
 before_install:
 # Add software package repository, containing updated build toochain, i.e. GNU GCC 4.8
-- sudo add-apt-repository ppa:ubuntu-toolchain-r/test --yes
-- sudo add-apt-repository ppa:kalakris/cmake --yes
+- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test 
+- sudo add-apt-repository --yes ppa:andykimpe/cmake3 
+# - sudo add-apt-repository --yes ppa:kubuntu-ppa/backports # cmake >=2.8.10
 - sudo apt-get update -qq
 # Download boost 1.5 and extract the source archive
 - wget --no-verbose --output-document=boost_1_56_0.tar.bz2 http://sourceforge.net/projects/boost/files/boost/1.56.0/boost_1_56_0.tar.bz2/download
