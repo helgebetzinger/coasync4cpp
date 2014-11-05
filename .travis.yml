@@ -18,14 +18,13 @@ install:
 # Install GNU GCC 4.8 required by use of C++11
 - sudo apt-get install -qq g++-4.8 gcc-4.8 cmake 
 - export CXX="g++-4.8" CC="gcc-4.8"
-# Build boost libraries required by ledger
+# Build boost libraries required by coasync4cpp
 - (cd $BOOST_ROOT; ./bootstrap.sh --with-libraries=atomic,chrono,context,coroutine,iostreams,system,thread)
 - (cd $BOOST_ROOT; ./b2 threading=multi --prefix=$BOOST_ROOT -d0 install)
 
 before_script:
 - which cmake
 - cmake --version
-- cd ..
 
 script:
 - mkdir _builds
