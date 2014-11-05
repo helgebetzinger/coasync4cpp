@@ -25,7 +25,7 @@ template< typename... Signature > struct BindHelper;
 // helper for Bind2Current specialization for function objects:
 
 template < typename F, typename RetType, class X, typename ... Ts >
-struct BindHelper< typename F, RetType(X::*)(Ts...) const > {
+struct BindHelper< F, RetType(X::*)(Ts...) const > {
 	template< typename FirstParam > 
 	static QueuePos post2thread_w_args(std::weak_ptr<TaskDispatcher> dispatcher, const F& foo, const Ts&... args) {
 		return ::post2thread(dispatcher, std::bind(foo, args ...));
@@ -36,12 +36,12 @@ struct BindHelper< typename F, RetType(X::*)(Ts...) const > {
 	static QueuePos send2thread(std::weak_ptr<TaskDispatcher> dispatcher, const F& foo, const Ts&... args) {
 		return ::send2thread(dispatcher, std::bind(foo, args ...));
 	}
-	static Task< boost::future< typename RetType > > task(const F& f, const Ts&... args) {
+	static Task< boost::future< RetType > > task(const F& f, const Ts&... args) {
 		return ::make_task(f, args ...);
 	}
 };
 
-template< typename F > struct Bind2Proxy : public BindHelper < typename F, decltype(&F::operator()) >  {
+template< typename F > struct Bind2Proxy : public BindHelper < F, decltype(&F::operator()) >  {
 };
 
 template < typename RetType, typename ... Ts >
@@ -58,7 +58,7 @@ struct Bind2Proxy < RetType(*)(Ts...) > {
 	static QueuePos send2thread(std::weak_ptr<TaskDispatcher> dispatcher, RetType(*f)(Ts...), const Ts&... args) {
 		return ::send2thread(dispatcher, std::bind((void_foo_type)(f), args...));
 	}
-	static Task< boost::future< typename RetType > > task(RetType(*f)(Ts...), const Ts&... args) {
+	static Task< boost::future< RetType > > task(RetType(*f)(Ts...), const Ts&... args) {
 		return ::make_task(f, args ...);
 	}
 };
@@ -77,7 +77,7 @@ struct Bind2Proxy < RetType(&)(Ts...) > {
 	static QueuePos send2thread(std::weak_ptr<TaskDispatcher> dispatcher, RetType(&f)(Ts...), const Ts&... args) {
 		return ::send2thread(dispatcher, std::bind((void_foo_type)(f), args...));
 	}
-	static Task< boost::future< typename RetType > > task(RetType(&f)(Ts...), const Ts&... args) {
+	static Task< boost::future< RetType > > task(RetType(&f)(Ts...), const Ts&... args) {
 		return ::make_task(f, args ...);
 	}
 };
@@ -98,7 +98,7 @@ struct Bind2Proxy < RetType(X::*)(Ts...) const > {
 	static QueuePos send2thread(std::weak_ptr<TaskDispatcher> dispatcher, RetType(X::* constMemberF)(Ts...) const, void* obj, const Ts&... args) {
 		return ::send2thread(dispatcher, std::bind((void_foo_type)(constMemberF),  static_cast<X*> (obj), args...));
 	}
-	static Task< boost::future< typename RetType > > task(RetType(X::* constMemberF)(Ts...) const, X* obj, const Ts&... args) {
+	static Task< boost::future< RetType > > task(RetType(X::* constMemberF)(Ts...) const, X* obj, const Ts&... args) {
 		return ::make_task( constMemberF, obj, args ...);
 	}
 };
@@ -120,7 +120,7 @@ struct Bind2Proxy < RetType(X::*)(Ts...) > {
 	static QueuePos send2thread(std::weak_ptr<TaskDispatcher> dispatcher, RetType(X::* memberF)(Ts...), void * obj, const Ts&... args) {
 		return ::send2thread(dispatcher, std::bind((void_foo_type)(memberF), static_cast<X*> (obj), args...));
 	}
-	static Task< boost::future< typename RetType > > task(RetType(X::* memberF)(Ts...), void * obj, const Ts&... args) {
+	static Task< boost::future< RetType > > task(RetType(X::* memberF)(Ts...), void * obj, const Ts&... args) {
 		return ::make_task( memberF, obj, args ...);
 	}
 };

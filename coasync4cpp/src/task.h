@@ -62,7 +62,7 @@ template< typename FutureValue > struct Task < boost::future< FutureValue > > : 
 {
 	using super = typename boost::future< FutureValue >;
 	using FutureType = typename boost::future < FutureValue >;
-	using Result = typename FutureValue; 
+	using Result = FutureValue; 
 	
 	// LIFECYCLE 
 
@@ -164,7 +164,7 @@ private:
 
 template< typename FutureValue > struct TaskEx  {
 
-	using Result = typename FutureValue;
+	using Result = FutureValue;
 
 	// LIFECYCLE 
 
@@ -221,7 +221,7 @@ struct is_task_type < Task<T> >
 
 
 template< typename PromiseType, typename FooType >
-auto set_value(PromiseType&& promise, FooType&& foo) -> typename std::enable_if< std::is_same< typename function_traits< typename FooType >::return_type, void >::value>::type
+auto set_value(PromiseType&& promise, FooType&& foo) -> typename std::enable_if< std::is_same< typename function_traits< FooType >::return_type, void >::value>::type
 {
 	try {
 		foo();
@@ -233,7 +233,7 @@ auto set_value(PromiseType&& promise, FooType&& foo) -> typename std::enable_if<
 }
 
 template< typename PromiseType, typename FooType >
-auto set_value(PromiseType&& promise, FooType&& foo) -> typename std::enable_if< !std::is_same< typename function_traits< typename FooType >::return_type, void >::value>::type
+auto set_value(PromiseType&& promise, FooType&& foo) -> typename std::enable_if< !std::is_same< typename function_traits< FooType >::return_type, void >::value>::type
 {
 	try {
 		promise.set_value(foo());

@@ -17,14 +17,14 @@ struct function_traits<R(*)(Args...)> : public function_traits < R(Args...) >
 template<class C, class R, class... Args>
 struct function_traits<R(C::*)(Args...)> : public function_traits < R(Args...) >
 {
-	static const std::size_t arity_w_obj = arity + 1;
+	static const std::size_t arity_w_obj = function_traits < R(Args...) >::arity + 1;
 };
 
 // const member function pointer
 template<class C, class R, class... Args>
 struct function_traits<R(C::*)(Args...) const> : public function_traits < R(Args...) >
 {
-	static const std::size_t arity_w_obj = arity + 1;
+	static const std::size_t arity_w_obj = function_traits < R(Args...) >::arity + 1;
 };
 
 // member object pointer
