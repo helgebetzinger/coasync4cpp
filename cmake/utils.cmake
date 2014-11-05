@@ -92,10 +92,10 @@ macro (make_filelist baseDir build_sources build_headers)
 		list (APPEND ${build_sources} ${common_sources} ${win32_sources})
 	elseif (MAC_OSX)
 		list (APPEND ${build_sources} ${common_sources} ${macosx_sources} ${unix_sources})
+		list (SORT ${build_sources}) # Helps XCode displaying the right packages
 	elseif (LINUX)
 		list (APPEND ${build_sources} ${common_sources} ${linux_sources} ${unix_sources})
 	endif()
-	list (SORT ${build_sources}) # Helps XCode displaying the right packages
 	
 	# cannot be inside MAC_OSX zone, as some targets (e.g. mac_osx client) doesn't mark osx files explizit.
 	fix_objc_flags ("${macosx_sources}")
