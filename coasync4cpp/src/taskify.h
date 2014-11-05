@@ -42,7 +42,7 @@ struct TaskifyCallback < std::function< R(Args...) > > {
 	inline
 	static 
 	auto 
-	select_arg( const std::shared_ptr<TypeOfPromise>& , _Ty&& _Arg) -> typename std::enable_if< !is_placeholder_type < typename remove_const_reference< typename _Ty >::type >::value, _Ty&& >::type
+	select_arg( const std::shared_ptr<TypeOfPromise>& , _Ty&& _Arg) -> typename std::enable_if< !is_placeholder_type < typename remove_const_reference< _Ty >::type >::value, _Ty&& >::type
 	{	
 		return std::forward<_Ty>(_Arg);
 	}
@@ -138,7 +138,7 @@ struct MakeTaskifyCallback {
 
 //	Printer<  typename remove_const_reference < typename function_traits<Signature>::argument< cPosOfCallback >::type >::type > printer;
 
-	using TypeOfTaskifyCallback = TaskifyCallback < typename TypeOfCallback >;
+	using TypeOfTaskifyCallback = TaskifyCallback < TypeOfCallback >;
 	using TypeOfTask = typename TypeOfTaskifyCallback::TypeOfTask;
 	using TypeOfPromise = typename TypeOfTaskifyCallback::TypeOfPromise;
 
