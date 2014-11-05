@@ -7,7 +7,7 @@ find_package (Boost ${BOOST_MIN_VERSION} COMPONENTS context thread coroutine REQ
 
 ####### setup the library itself 
 
-make_filelist ("/src/" build_sources build_headers)
+make_filelist ("src/" build_sources build_headers )
 
 # Create a library called "coasync4cpp"
 add_library (coasync4cpp ${LIBRARY_FLAGS} ${build_sources} ${build_headers})

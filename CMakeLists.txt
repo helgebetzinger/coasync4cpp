@@ -42,6 +42,7 @@ if ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
 endif()
 	
 message ( STATUS "\t output dir ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ..." )
+message ( STATUS "\t system: ${CMAKE_SYSTEM_NAME} " )
 
 ####### boost  
 # we need to configure boost here, because of the automatic linker option on windows.

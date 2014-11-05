@@ -1,7 +1,20 @@
+
+# must be called before very first usage: 
+
+ macro ( init_utils  ) 
+	if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+		set (LINUX TRUE)
+	elseif ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+		set (WIN32 TRUE)
+	elseif ("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+		set (MAC_OSX TRUE)
+	endif()
+endmacro ( init_utils )
+
 # Generates a standard module file list (from all inside src/)
 # See macro make_filelist
  
-# Generates a list (output) of all elements in input which match the regexpression "pattern"
+ # Generates a list (output) of all elements in input which match the regexpression "pattern"
 # correct call:
 # list_regex ("${sources}" unix_sources ".*/unix/.*")
 macro (list_regex input output pattern)
@@ -76,6 +89,7 @@ endmacro (group_them)
 # source file list will be saved in build_sources
 # header file list will be saved in build_headers
 macro (make_filelist baseDir build_sources build_headers)
+    init_utils() 
 	file (GLOB_RECURSE sources ${baseDir}/*.cpp ${baseDir}/*.c ${baseDir}/*.mm ${baseDir}/*.m ${baseDir}/*.h) ## .mm/.m is ObjC code on the mac
 	
 	list_regex ("${sources}" unix_sources ".*/unix/.*")
@@ -92,10 +106,11 @@ macro (make_filelist baseDir build_sources build_headers)
 		list (APPEND ${build_sources} ${common_sources} ${win32_sources})
 	elseif (MAC_OSX)
 		list (APPEND ${build_sources} ${common_sources} ${macosx_sources} ${unix_sources})
-		list (SORT ${build_sources}) # Helps XCode displaying the right packages
 	elseif (LINUX)
 		list (APPEND ${build_sources} ${common_sources} ${linux_sources} ${unix_sources})
 	endif()
+	
+	list (SORT ${build_sources}) # Helps XCode displaying the right packages
 	
 	# cannot be inside MAC_OSX zone, as some targets (e.g. mac_osx client) doesn't mark osx files explizit.
 	fix_objc_flags ("${macosx_sources}")
