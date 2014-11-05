@@ -26,7 +26,7 @@ install:
 
 - sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake libboost1.55-all-dev qt5-default qttools5-dev-tools 
 # g++4.8.1
-- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8" fi 
+- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi 
 
 # Build boost libraries required by coasync4cpp
 #- (cd $BOOST_ROOT; ./bootstrap.sh --with-libraries=atomic,chrono,context,coroutine,iostreams,system,thread)
