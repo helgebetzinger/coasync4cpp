@@ -23,7 +23,7 @@ protected:
 			thread->join();
 		}
 	}
-	TaskDispatcherPtr dispatcher() const _NOEXCEPT {
+	TaskDispatcherPtr dispatcher() const  {
 		return thread->dispatcher();
 	}
 

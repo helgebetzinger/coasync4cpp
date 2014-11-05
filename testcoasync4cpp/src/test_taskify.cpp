@@ -24,7 +24,7 @@ protected:
 			thread->join();
 		}
 	}
-	TaskDispatcherPtr secondThread() const _NOEXCEPT {
+	TaskDispatcherPtr secondThread() const  {
 		return thread->dispatcher();
 	}
 
