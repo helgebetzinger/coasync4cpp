@@ -1,0 +1,3 @@
+# ignore everything within build + bin directories
+build/
+bin/
