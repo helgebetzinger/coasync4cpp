@@ -25,7 +25,7 @@ before_install:
 install:
 # Install GNU GCC 4.8 required by use of C++11
 - sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake libboost1.55-all-dev qt5-default qttools5-dev-tools 
-#- export CXX="g++-4.8" CC="gcc-4.8"
+- export CXX="g++-4.8" CC="gcc-4.8"
 # Build boost libraries required by coasync4cpp
 #- (cd $BOOST_ROOT; ./bootstrap.sh --with-libraries=atomic,chrono,context,coroutine,iostreams,system,thread)
 #- (cd $BOOST_ROOT; ./b2 threading=multi --prefix=$BOOST_ROOT -d0 install)
