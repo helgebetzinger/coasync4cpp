@@ -39,6 +39,6 @@ script:
 - mkdir _builds
 - cd _builds
 # - cmake .. # ok 
-- cmake -Dbuild_tests=ON ..
+- cmake -Dbuild_tests=ON -Dbuild_coasync4qt=ON .. 
 # - make
 # - ctest
