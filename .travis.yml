@@ -7,10 +7,10 @@ before_install:
 # Add software package repository, containing updated build toochain, i.e. GNU GCC 4.8
 # - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test 
 
-- sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-- sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
-- sudo add-apt-repository -y ppa:chewing/travis-ci/cmake # cmake 3.02 
-- sudo add-apt-repository -y ppa:boost-latest/ppa 
+- sudo add-apt-repository -y -qq ppa:ubuntu-toolchain-r/test
+- sudo add-apt-repository -y -qq ppa:ubuntu-sdk-team/ppa
+- sudo add-apt-repository -y -qq ppa:chewing/travis-ci/cmake # cmake 3.02 
+- sudo add-apt-repository -y -qq ppa:boost-latest/ppa 
 - sudo apt-get update -qq
 
 # - sudo add-apt-repository --yes ppa:kubuntu-ppa/backports # cmake >=2.8.10
@@ -24,8 +24,7 @@ before_install:
 
 install:
 # Install GNU GCC 4.8 required by use of C++11
-#- sudo apt-get install -qq g++-4.8 gcc-4.8 cmake3 
-- sudo apt-get install -y -qq cmake-data cmake libboost1.55-all-dev qt5-default qttools5-dev-tools 
+- sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake libboost1.55-all-dev qt5-default qttools5-dev-tools 
 #- export CXX="g++-4.8" CC="gcc-4.8"
 # Build boost libraries required by coasync4cpp
 #- (cd $BOOST_ROOT; ./bootstrap.sh --with-libraries=atomic,chrono,context,coroutine,iostreams,system,thread)
