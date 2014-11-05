@@ -22,7 +22,7 @@ void Awaitable::awaitReady()
 		{
 			// here we are within coroutine 
 			auto current_coro = co_stack().top();
-			onReady(std::bind([current_coro]()
+			then(std::bind([current_coro]()
 			{
 				// We are within the context of async operation and have its result here within 'ready'. Current thread
 				// need not to be the original thread , its simple the thread that was used by the async operation. 

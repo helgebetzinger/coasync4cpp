@@ -9,6 +9,7 @@
 #include <future>
 
 #include "boost/thread/tss.hpp"
+#include "boost/noncopyable.hpp"
 
 #include "type_at_pos.h"
 
@@ -104,14 +105,15 @@ protected:
 	const std::thread::id mThreadId;  
 };
 
+typedef std::promise< TaskDispatcherPtr > ThreadPtrPromise;
+typedef std::future< TaskDispatcherPtr > ThreadPtrFuture;
+
 class TaskDispatcher4StdThread : public TaskDispatcherBase {
 
 	typedef TaskDispatcherBase super;
 
 public:
 
-	typedef std::promise< TaskDispatcherPtr > ThreadPtrPromise;
-	typedef std::future< TaskDispatcherPtr > ThreadPtrFuture;
 	
 	virtual ~TaskDispatcher4StdThread();
 
@@ -191,19 +193,19 @@ public:
 
 	// INQUIRY 
 
-	TaskDispatcherPtr dispatcher() const _NOEXCEPT{
+	TaskDispatcherPtr dispatcher() const {
 		return mScheduler;
 	}
-	std::thread::id get_id() const _NOEXCEPT {
+	std::thread::id get_id() const  {
 		return mThread.get_id();
 	}
-	bool joinable() const _NOEXCEPT {
+	bool joinable() const  {
 		return mThread.joinable();
 	}
 
 private:
 
-	TaskDispatcher4StdThread::ThreadPtrPromise mThreadPtrPromise;
+	ThreadPtrPromise mThreadPtrPromise;
 	std::thread mThread;
 	TaskDispatcherPtr mScheduler;
 

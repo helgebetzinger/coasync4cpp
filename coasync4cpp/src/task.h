@@ -148,7 +148,7 @@ public:
 
 	/// true, if an result is available without to block current coroutine
 	virtual bool isReady() const = 0;
-	virtual void onReady(const std::function< void(void) >&) = 0;
+	virtual void then(const std::function< void(void) >&) = 0;
 	virtual void get(void *) = 0;
 
 	/// blocks current coroutine, until result is available. If necessary, it saves an exception within 

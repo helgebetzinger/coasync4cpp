@@ -83,7 +83,7 @@ template< int Pos, typename... Ts > struct type_at_pos {
 // Walker
 template< int Pos, typename T, typename... Rest > struct type_at_pos < Pos, T, Rest... > {
 	typedef  typename std::conditional< 0 == Pos,
-							  typename T, 
+							  T, 
 							  typename type_at_pos< Pos-1, Rest...>::type >::type type;
 };
 
