@@ -67,8 +67,12 @@ class TestTaskException : public std::exception {
 public:
 	TestTaskException(const char * what) : mWhat(what) {
 	}
+#ifdef _GLIBCXX_USE_NOEXCEPT 
+	virtual const char * what() const _GLIBCXX_USE_NOEXCEPT override {
+#else
 	virtual const char * what() const override {
-		return mWhat;
+#endif
+	return mWhat;
 	}
 private:
 	const char * mWhat;
