@@ -4,10 +4,12 @@
  macro ( init_utils  ) 
 	if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 		set (LINUX TRUE)
+		set (UNIX TRUE)
 	elseif ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
 		set (WIN32 TRUE)
 	elseif ("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
 		set (MAC_OSX TRUE)
+		set (UNIX TRUE)
 	endif()
 endmacro ( init_utils )
 
