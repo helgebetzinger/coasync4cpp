@@ -10,11 +10,14 @@ before_install:
 - sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
 - sudo add-apt-repository -y ppa:chewing/travis-ci/cmake # cmake 3.02 
 - sudo add-apt-repository -y ppa:boost-latest/ppa 
+- sudo add-apt-repository -y ppa:beineri/opt-qt521 # qt 5.2
 - sudo apt-get update -qq
 
 install:
 
-- sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake libboost1.55-all-dev qt5-default qttools5-dev-tools 
+- sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake libboost1.55-all-dev 
+- sudo apt-get install -y -qq qt52base qt52webkit qt52tools 
+# qt5-default qttools5-dev-tools 
 # g++4.8.1
 - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi 
 
