@@ -19,14 +19,19 @@ install:
 # install compiler, boost, cmake 
 - sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake libboost1.55-all-dev 
 
+# upgrade compiler to g++4.8.1
+- if [ "$CXX" = "g++" ]; then sudo update-alternatives --remove-all gcc ; fi 
+- if [ "$CXX" = "g++" ]; then sudo update-alternatives --remove-all g++ ; fi 
+- if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 20 ; fi 
+- if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 20 ; fi 
+- if [ "$CXX" = "g++" ]; then sudo update-alternatives --config gcc ; fi 
+- if [ "$CXX" = "g++" ]; then sudo update-alternatives --config g++ ; fi 
+- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi 
+
 # install qt 5.2 
 - sudo apt-get install -y -qq qt52base qt52webkit qt52tools 
 - export CMAKE_PREFIX_PATH="/opt/qt52/lib/cmake"
 - ls /opt/qt52/lib/cmake 
-
-# qt5-default qttools5-dev-tools 
-# g++4.8.1
-- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi 
 
 before_script:
 
