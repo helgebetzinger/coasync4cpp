@@ -54,10 +54,10 @@ struct is_qfuture_type < QFuture<T> >
 
 // extension point to get await working:
 template<typename Future >
-auto operator << (const TaskFactory& /*dummy*/, Future &&ft) -> typename std::enable_if< is_qfuture_type< typename remove_const_reference< typename Future>::type >::value, decltype(ft.result()) >::type
+auto operator << (const TaskFactory& /*dummy*/, Future &&ft) -> typename std::enable_if< is_qfuture_type< typename remove_const_reference< Future>::type >::value, decltype(ft.result()) >::type
 
 {
-	QFutureAwaitable< typename remove_const_reference< typename Future>::type > TaskEx( std::move(ft));
+	QFutureAwaitable< typename remove_const_reference< Future>::type > TaskEx( std::move(ft));
 	TaskEx.awaitReady();
 	TaskEx.try_rethrow_exception();
 	return TaskEx.get();
@@ -65,9 +65,9 @@ auto operator << (const TaskFactory& /*dummy*/, Future &&ft) -> typename std::en
 
 // extension point to get TaskEx<> working:
 template<typename Future >
-auto make_awaitable(Future &&ft) -> typename std::enable_if< is_qfuture_type< typename remove_const_reference< typename Future>::type >::value, std::unique_ptr < Awaitable > >::type
+auto make_awaitable(Future &&ft) -> typename std::enable_if< is_qfuture_type< typename remove_const_reference< Future>::type >::value, std::unique_ptr < Awaitable > >::type
 {
-	return std::unique_ptr < Awaitable > ( new QFutureAwaitable< typename remove_const_reference< typename Future>::type > (std::move(ft)));
+	return std::unique_ptr < Awaitable > ( new QFutureAwaitable< typename remove_const_reference< Future>::type > (std::move(ft)));
 }
 
 
