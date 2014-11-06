@@ -14,4 +14,4 @@
 
 
 #include <QtCore/QCoreApplication>
-#include <QtCore/qtextcodec>
+#include <QtCore/QTextCodec>

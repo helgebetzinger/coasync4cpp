@@ -13,6 +13,47 @@
 	endif()
 endmacro ( init_utils )
 
+macro ( configure_platform_specific_compiler_flags  ) 
+
+	include (CheckCXXCompilerFlag)
+
+	# Platform dependent defines
+	if ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" ) 
+		# /SAFESEH:NO helps to overcome compatibility issues with precompiled boost libraries:
+		set( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO"  )
+		message ( STATUS "\t output linker flags  ${CMAKE_EXE_LINKER_FLAGS} ..." )
+	endif()
+
+	# enable compiler specific support for c++11 : 
+
+	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+	CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+
+	if(COMPILER_SUPPORTS_CXX11)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	elseif(COMPILER_SUPPORTS_CXX0X)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+	endif()
+
+	# enable compiler specific support for link against if Qt , that 
+	# was built with -reduce-relocations: 
+
+	CHECK_CXX_COMPILER_FLAG("-fPIC" COMPILER_SUPPORTS_POS_INDEPENDENT_CODE)
+
+	if(COMPILER_SUPPORTS_POS_INDEPENDENT_CODE)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+	endif()
+
+	# supress qt specific warnings from compiler: 
+
+	CHECK_CXX_COMPILER_FLAG("-Wno-deprecated-register" COMPILER_SUPPORTS_SUPRESS_OF_DEPRECATED_REGISTER_WARNING)
+
+	if(COMPILER_SUPPORTS_SUPRESS_OF_DEPRECATED_REGISTER_WARNING)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-register")
+	endif()
+
+endmacro ( configure_platform_specific_compiler_flags )
+
 # Generates a standard module file list (from all inside src/)
 # See macro make_filelist
  

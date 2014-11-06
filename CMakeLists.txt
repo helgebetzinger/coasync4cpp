@@ -1,6 +1,5 @@
 
 
-
 # root cmake file
 
 # todo
@@ -28,39 +27,13 @@ option(build_tests "Build coasync specific unit-tests." OFF)
 # our own tools directory 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
+include (utils)
+
 set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_CXX_COMPILER_ID}" )
 set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_CXX_COMPILER_ID}" )
 set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_CXX_COMPILER_ID}" )	
 
-include (utils)
-include (CheckCXXCompilerFlag)
-
-# Platform dependent defines
-if ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" ) 
-    # /SAFESEH:NO helps to overcome compatibility issues with precompiled boost libraries:
-	set( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO"  )
-	message ( STATUS "\t output linker flags  ${CMAKE_EXE_LINKER_FLAGS} ..." )
-endif()
-
-# enable compiler specific support for c++11 : 
-
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-
-if(COMPILER_SUPPORTS_CXX11)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-elseif(COMPILER_SUPPORTS_CXX0X)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-endif()
-
-# enable compiler specific support for link against if Qt , that 
-# was built with -reduce-relocations: 
-
-CHECK_CXX_COMPILER_FLAG("-fPIC" COMPILER_SUPPORTS_POS_INDEPENDENT_CODE)
-
-if(COMPILER_SUPPORTS_POS_INDEPENDENT_CODE)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-endif()
+configure_platform_specific_compiler_flags()
 
 message( STATUS "\t output dir ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ..." )
 message( STATUS "\t system: ${CMAKE_SYSTEM_NAME} " )
