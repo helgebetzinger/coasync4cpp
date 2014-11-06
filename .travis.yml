@@ -3,6 +3,7 @@ language: cpp
 compiler:
 - clang
 - gcc
+
 before_install:
 
 # Add software package repository, containing updated build toochain, i.e. GNU GCC 4.8
@@ -15,8 +16,14 @@ before_install:
 
 install:
 
+# install compiler, boost, cmake 
 - sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake libboost1.55-all-dev 
+
+# install qt 5.2 
 - sudo apt-get install -y -qq qt52base qt52webkit qt52tools 
+- export CMAKE_PREFIX_PATH="/opt/qt52/lib/cmake"
+- ls /opt/qt52/lib/cmake 
+
 # qt5-default qttools5-dev-tools 
 # g++4.8.1
 - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi 
