@@ -17,10 +17,9 @@ before_install:
 install:
 
 # install compiler, boost, cmake 
-- sudo apt-get install -y -qq cmake-data cmake libboost1.55-all-dev 
+- sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake libboost1.55-all-dev 
 
 # upgrade compiler to g++4.8.1
-- if [ "$CXX" = "g++" ]; then sudo apt-get install -y -qq gcc-4.8 g++-4.8; fi
 - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90 ; fi 
 - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi 
 
