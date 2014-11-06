@@ -39,7 +39,11 @@ class TestTaskifyException : public std::exception {
 public:
 	TestTaskifyException(const char * what) : mWhat(what) {
 	}
+#ifdef _GLIBCXX_USE_NOEXCEPT 
+	virtual const char * what() const _GLIBCXX_USE_NOEXCEPT override{
+#else
 	virtual const char * what() const override {
+#endif
 		return mWhat;
 	}
 private:
