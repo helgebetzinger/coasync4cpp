@@ -40,6 +40,6 @@ script:
 - mkdir _builds
 - cd _builds
 - cmake -Dbuild_tests=ON -Dbuild_coasync4qt=ON DCMAKE_PREFIX_PATH=/opt/qt52/lib/cmake .. 
-- make 
-#- make VERBOSE=1 
+# - make 
+- make VERBOSE=1 
 # - ctest
