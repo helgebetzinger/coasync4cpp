@@ -4,33 +4,19 @@ compiler:
 - clang
 - gcc
 before_install:
-# Add software package repository, containing updated build toochain, i.e. GNU GCC 4.8
-# - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test 
 
+# Add software package repository, containing updated build toochain, i.e. GNU GCC 4.8
 - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 - sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
 - sudo add-apt-repository -y ppa:chewing/travis-ci/cmake # cmake 3.02 
 - sudo add-apt-repository -y ppa:boost-latest/ppa 
 - sudo apt-get update -qq
 
-# - sudo add-apt-repository --yes ppa:kubuntu-ppa/backports # cmake >=2.8.10
-
-# Download boost 1.5 and extract the source archive
-#- wget --no-verbose --output-document=boost_1_56_0.tar.bz2 http://sourceforge.net/projects/boost/files/boost/1.56.0/boost_1_56_0.tar.bz2/download
-#- export BOOST_ROOT="$TRAVIS_BUILD_DIR/../boost"
-#- export CMAKE_MODULE_PATH="$BOOST_ROOT"
-#- mkdir -p $BOOST_ROOT
-#- tar jxf boost_1_56_0.tar.bz2 --strip-components=1 -C $BOOST_ROOT
-
 install:
 
 - sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake libboost1.55-all-dev qt5-default qttools5-dev-tools 
 # g++4.8.1
 - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi 
-
-# Build boost libraries required by coasync4cpp
-#- (cd $BOOST_ROOT; ./bootstrap.sh --with-libraries=atomic,chrono,context,coroutine,iostreams,system,thread)
-#- (cd $BOOST_ROOT; ./b2 threading=multi --prefix=$BOOST_ROOT -d0 install)
 
 before_script:
 
@@ -44,5 +30,6 @@ script:
 - mkdir _builds
 - cd _builds
 - cmake -Dbuild_tests=ON -Dbuild_coasync4qt=ON .. 
-- make VERBOSE=1 
+- make 
+#- make VERBOSE=1 
 # - ctest
