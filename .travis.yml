@@ -40,7 +40,7 @@ install:
 # install boost, cmake 
 
 # - sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake libboost1.55-all-dev 
-- sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake  boost1.55=1.55.0-1ppa1~saucy1
+- sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake  boost1.55=1.55.0-1ppa1~quantal1
 
 # install qt 5.2 
 
