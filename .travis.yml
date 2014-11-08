@@ -74,5 +74,7 @@ script:
 # - ctest
 
 after_failure:
-- g++ -v
+- echo ########## bootstrap.log ##############
 - cat bootstrap.log 
+- echo ##########  g++ version ###############
+- g++ -v
