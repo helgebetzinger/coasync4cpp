@@ -74,6 +74,9 @@ script:
 - make VERBOSE=1 
 # - ctest
 
+after_success:
+- echo ########## success ##############
+
 after_failure:
 - echo ########## bootstrap.log ##############
 - cat bootstrap.log 
