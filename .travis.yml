@@ -50,6 +50,7 @@ install:
 - tar jxf boost-trunk.tar.bz2 --strip-components=1 -C $BOOST_ROOT
 - (cd $BOOST_ROOT; ./bootstrap.sh --with-libraries=system,thread,coroutine,context )
 - (cd $BOOST_ROOT; ./b2 cxxflags="-std=c++11" threading=multi --prefix=$BOOST_ROOT -d0 install)
+- cat bootstrap.log
 
 # install qt 5.2 
 
