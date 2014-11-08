@@ -42,15 +42,6 @@ install:
 #- sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake libboost1.55-all-dev 
 - sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake 
 
- # Install newer boost compatible with gcc 4.8.
-- g++ -v
-- wget --no-verbose --output-document=boost-trunk.tar.bz2 http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2/download
-- export BOOST_ROOT="$TRAVIS_BUILD_DIR/../boost-trunk"
-- export CMAKE_MODULE_PATH="$BOOST_ROOT"
-- mkdir -p $BOOST_ROOT
-- tar jxf boost-trunk.tar.bz2 --strip-components=1 -C $BOOST_ROOT
-- (cd $BOOST_ROOT; ./bootstrap.sh --with-libraries=system,thread,coroutine,context )
-- (cd $BOOST_ROOT; ./b2 cxxflags="-std=c++11" threading=multi --prefix=$BOOST_ROOT -d0 install)
 
 # install qt 5.2 
 
@@ -67,6 +58,17 @@ before_script:
 - clang -v
 
 script:
+
+ # Install newer boost compatible with gcc 4.8.
+- g++ -v
+- wget --no-verbose --output-document=boost-trunk.tar.bz2 http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2/download
+- export BOOST_ROOT="$TRAVIS_BUILD_DIR/../boost-trunk"
+- export CMAKE_MODULE_PATH="$BOOST_ROOT"
+- mkdir -p $BOOST_ROOT
+- tar jxf boost-trunk.tar.bz2 --strip-components=1 -C $BOOST_ROOT
+- (cd $BOOST_ROOT; ./bootstrap.sh --with-libraries=system,thread,coroutine,context )
+- (cd $BOOST_ROOT; ./b2 cxxflags="-std=c++11" threading=multi --prefix=$BOOST_ROOT -d0 install)
+
 - mkdir _builds
 - cd _builds
 - cmake -Dbuild_tests=ON -Dbuild_coasync4qt=ON DCMAKE_PREFIX_PATH=/opt/qt52/lib/cmake .. 
