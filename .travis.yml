@@ -43,6 +43,7 @@ install:
 - sudo apt-get install -y -qq gcc-4.8 g++-4.8 cmake-data cmake 
 
  # Install newer boost compatible with gcc 4.8.
+ - g++ -v
 - wget --no-verbose --output-document=boost-trunk.tar.bz2 http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2/download
 - export BOOST_ROOT="$TRAVIS_BUILD_DIR/../boost-trunk"
 - export CMAKE_MODULE_PATH="$BOOST_ROOT"
@@ -78,3 +79,10 @@ after_failure:
 - cat bootstrap.log 
 - echo ##########  g++ version ###############
 - g++ -v
+
+after_script:
+- echo ########?? bootstrap.log ##############
+- cat bootstrap.log 
+- echo ##########  g++ version ###############
+- g++ -v
+
