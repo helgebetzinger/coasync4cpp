@@ -2,7 +2,7 @@
 
 coasync4cpp allows to write async code without callbacks using async/await/task! For C++ 11! 
 
-[![Build Status](https://travis-ci.org/helgebetzinger/coasync4cpp.png?branch=master)]
+[![Build Status](https://travis-ci.org/helgebetzinger/coasync4cpp.png?branch=dev-gcc_support)]
  (https://travis-ci.org/helgebetzinger/coasync4cpp)
 
 ## async/await 
