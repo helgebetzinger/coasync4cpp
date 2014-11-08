@@ -78,7 +78,7 @@ script:
 
 after_success:
 - echo ########## success ##############
-
+# trigger rebui ... 
 after_failure: "cat ./bootstrap.log" 
 - echo ########## bootstrap.log ##############
 - cat ./bootstrap.log 
