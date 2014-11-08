@@ -59,7 +59,7 @@ An c++ 11 compliant compiler is here Microsoft Visual 12 2013 Express.
 
 ### Getting the Source
 
-git clone 
+git clone https://github.com/helgebetzinger/coasync4cpp.git
 
 ### Build using CMake 
 
