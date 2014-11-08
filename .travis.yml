@@ -2,7 +2,7 @@
 language: cpp
 
 compiler:
-- clang
+# - clang
 - gcc
 
 os:
@@ -77,15 +77,15 @@ script:
 after_success:
 - echo ########## success ##############
 
-after_failure:
+after_failure: "cat ./bootstrap.log" 
 - echo ########## bootstrap.log ##############
-- cat bootstrap.log 
+- cat ./bootstrap.log 
 - echo ##########  g++ version ###############
 - g++ -v
 
 after_script:
 - echo ########?? bootstrap.log ##############
-- cat bootstrap.log 
+- cat ./bootstrap.log 
 - echo ##########  g++ version ###############
 - g++ -v
 
