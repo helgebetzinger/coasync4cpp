@@ -1,8 +1,19 @@
 
 language: cpp
+
 compiler:
 - clang
-- gcc
+# - gcc
+
+os:
+- linux
+# - osx
+
+branches:
+only:
+- master
+- /^(?i:dev)-.*$/ # matches Dev-cmake and other branches and tags that start with dev- in any combination of cases.
+- /^(?i:release)-.*$/ # matches release-0.10 and other branches and tags that start with release- in any combination of cases.
 
 before_install:
 
