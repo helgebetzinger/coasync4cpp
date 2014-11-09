@@ -33,51 +33,7 @@ protected:
 
 };
 
-
-
-struct IAwaitbaleEx {
-	virtual std::string c() const = 0;
-};
-
-struct AwaitbaleBaseEx : public IAwaitbaleEx {
-	template < typename AwaitbaleType > AwaitbaleBaseEx(AwaitbaleType&& a) {
-		(*this) = a;
-	}
-	virtual std::string c() const override {
-		assert(!"wrong here");
-		return "wrong here!";
-	}
-protected:
-	AwaitbaleBaseEx() {
-	}
-
-};
-
-struct AwaitbaleStrA : public AwaitbaleBaseEx {
-	virtual std::string c() const override {
-		return "A";
-	}
-};
-
-struct AwaitbaleStrB : public AwaitbaleBaseEx {
-	virtual std::string c() const override {
-		return "B";
-	}
-};
-
-void test() {
-	AwaitbaleStrA a;
-	AwaitbaleStrB b;
-	AwaitbaleBaseEx e(a);
-	std::string r = e.c();
-	e = b;
-	r = e.c();
-}
-
-
 TEST_F(test_bind2thread, bind2thread ) {
-
-	test();
 
 	std::thread::id executingThread;
 

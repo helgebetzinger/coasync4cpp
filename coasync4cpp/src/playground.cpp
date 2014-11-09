@@ -204,33 +204,6 @@ static void testInstallThreadAdapter() {
 //	}
 //}
 
-struct IAwaitbale {
-	virtual bool isReady() const = 0;
-	virtual void then(const std::function< void(void) >&) = 0;
-	virtual void get(void *) = 0;
-};
-
-template< typename ValueType > struct AwaitbaleEx : public IAwaitbale { 
-
-	template < typename AwaitbaleType > AwaitbaleEx( AwaitbaleType&& a ) {
-		(*this) = make_awaitable( a ); 
-	}
-
-	// cast operator 
-	// operator 
-	virtual bool isReady() const override {
-		assert(!"wrong here");
-		return false;
-	}
-	virtual void then(const std::function< void(void) >&) override {
-		assert(!"wrong here");
-	}
-	virtual void get(void *) override {
-		assert(!"wrong here");
-	}
-};
-
-
 //
 //
 //
